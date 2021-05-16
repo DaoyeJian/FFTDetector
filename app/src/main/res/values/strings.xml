@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">FFTDetector</string>
+
+    <string name="samplingRateText"><u>\tサンプリングレート</u></string>
+    <string name="dataPointText"><u>\t周波数分解能</u></string>
+    <string name="yaxisdbUnitText"><u>\tY軸dB表示</u></string>
+    <string name="averagingNumText"><u>\tアベレージング回数</u></string>
+    <string name="windowText"><u>\t窓関数</u></string>
+    <string name="soundLevelText">録音レベル</string>
+    <string name="recordTimeText">録音時間</string>
+    <string name="recordBtnText">録音</string>
+    <string name="stopBtnText">停止</string>
+    <string name="playBtnText">再生</string>
+    <string name="newRecordText">新規</string>
+    <string name="xAxisLabelText">Frequency</string>
+    <string name="markerFreqText">\tマーカー周波数@1800min-1</string>
+    <string name="markerHzText">Marker/Hz</string>
+    <string name="sideBandHzText">Side Band/Hz</string>
+    <string name="rpmText">Speed/rpm</string>
+    <string name="frText">fr </string>
+    <string name="fcText">f1 </string>
+    <string name="zfcText">f2</string>
+    <string name="zfiText">f3</string>
+    <string name="fbx2Text">f4</string>
+    <string name="downBtnText"><![CDATA[<]]></string>
+    <string name="upBtnText"><![CDATA[>]]></string>
+    <string name="termAndConditionsText">利用規約及びプライバシーポリシー</string>
+    <string name="ossLicenseText">オープンソースライセンス</string>
+    <string name="versionInfoText">バージョン情報</string>
+    <string name="rectangleText">レクタンギュラ</string>
+    <string name="hanningText">ハニング</string>
+    <string name="recordingText">RECORDING</string>
+    <string name="analizePointText">Analysis Point</string>
+    <string name="sideBandText">Side</string>
+    <string name="maxRecortTimeText">MAX RECORD TIME : 20 sec</string>
+    <string name="privacyPolictyUrlText">http://motofam-dmn.readymade.jp/privacy_policy.html</string>
+
+</resources>

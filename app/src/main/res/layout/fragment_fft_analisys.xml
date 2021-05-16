@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".fftAnalisys">
+
+
+    <SeekBar
+        android:id="@+id/wavSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:progressBackgroundTint="@android:color/darker_gray"
+        android:progressTint="@color/teal_700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.657"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutWav" />
+
+    <Button
+        android:id="@+id/fftBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/button_cornerradius_16dp"
+        android:text="FFT"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/myblue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wavSeekBar" />
+
+    <Button
+        android:id="@+id/upBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/upBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/downBtn" />
+
+    <Button
+        android:id="@+id/downBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/downBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/upBtn"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutFft" />
+
+    <Button
+        android:id="@+id/sideUpBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/upBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sideDownBtn" />
+
+    <Button
+        android:id="@+id/sideDownBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/downBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/sideUpBtn"
+        app:layout_constraintTop_toBottomOf="@+id/editMarker" />
+
+    <Button
+        android:id="@+id/speedUpBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/upBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/speedDownBtn" />
+
+    <Button
+        android:id="@+id/speedDownBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:backgroundTint="@color/myblue"
+        android:textColor="@color/white"
+        android:minHeight="0dp"
+        android:text="@string/downBtnText"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/speedUpBtn"
+        app:layout_constraintTop_toBottomOf="@+id/editSide" />
+
+    <EditText
+        android:id="@+id/editMarker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="#B5AEAE"
+        android:ems="10"
+        android:hint="Marker"
+        android:inputType="number|numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toBottomOf="@+id/downBtn"
+        app:layout_constraintEnd_toStartOf="@+id/downBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/downBtn" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="@string/markerHzText"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/editMarker"
+        app:layout_constraintEnd_toEndOf="@+id/editMarker" />
+
+    <EditText
+        android:id="@+id/editSide"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="#B5AEAE"
+        android:ems="10"
+        android:hint="Side"
+        android:inputType="numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toBottomOf="@+id/sideDownBtn"
+        app:layout_constraintEnd_toStartOf="@+id/sideDownBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sideDownBtn" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="@string/sideBandHzText"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/editSide"
+        app:layout_constraintEnd_toEndOf="@+id/editSide" />
+
+    <EditText
+        android:id="@+id/editSpeed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="#B5AEAE"
+        android:ems="10"
+        android:hint="Speed"
+        android:inputType="number|numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toBottomOf="@+id/speedDownBtn"
+        app:layout_constraintEnd_toStartOf="@+id/downBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/speedDownBtn" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rpmText"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/editSpeed"
+        app:layout_constraintEnd_toEndOf="@+id/editSpeed" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutWav"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/flame_fft_wav_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/markerWavText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/textView13"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/analizePointText"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="sec"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/markerWavText"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChartWav"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/markerWavText">
+
+        </com.github.mikephil.charting.charts.LineChart>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutFft"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/flame_fft_wav_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fftBtn">
+
+        <TextView
+            android:id="@+id/xAxisLabelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/xAxisLabelText"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            app:layout_constraintEnd_toEndOf="@+id/lineChartFft"
+            app:layout_constraintStart_toStartOf="@+id/lineChartFft"
+            app:layout_constraintTop_toBottomOf="@+id/lineChartFft" />
+
+        <TextView
+            android:id="@+id/yAxisLabelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="270"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toBottomOf="@+id/lineChartFft"
+            app:layout_constraintEnd_toStartOf="@+id/lineChartFft"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lineChartFft" />
+
+        <TextView
+            android:id="@+id/sideFreqText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/markerFreqText"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/speedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/markerFreqText"
+            app:layout_constraintTop_toBottomOf="@+id/markerFreqText" />
+
+        <TextView
+            android:id="@+id/markerFreqText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChartFft"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/speedText">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeed">
+
+        <TextView
+            android:id="@+id/frSwitchText"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/aquamarine" />
+
+        <TextView
+            android:id="@+id/zfcSwitchText"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/darkkhaki" />
+
+        <TextView
+            android:id="@+id/fbx2SwitchText"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/firebrick" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeed">
+
+        <Switch
+            android:id="@+id/frSwitch"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/frText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/aquamarine" />
+
+        <Switch
+            android:id="@+id/zfcSwitch"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/zfcText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/darkkhaki" />
+
+        <Switch
+            android:id="@+id/fbx2Switch"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/fbx2Text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/firebrick" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeed">
+
+        <TextView
+            android:id="@+id/fcSwitchText"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/lime" />
+
+        <TextView
+            android:id="@+id/zfiSwitchText"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/darkorange" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeed">
+
+        <Switch
+            android:id="@+id/fcSwitch"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/fcText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/lime" />
+
+        <Switch
+            android:id="@+id/zfiSwitch"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/zfiText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/darkorange" />
+
+        <Switch
+            android:id="@+id/sideBandSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sideBandText"
+            android:textColor="#E4007F" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

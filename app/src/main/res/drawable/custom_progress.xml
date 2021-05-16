@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- layout_heightとlayout_widthを入れないとエラーになるが10dpを200dpなどに変えても何が変わるのかよくわからず  !-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_height="10dp" android:layout_width="10dp">
+    <item android:id="@android:id/background">
+        <color android:color="#696969" />
+
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <color android:color="#aa8000" />
+        </clip>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <color android:color="#ff0000" />
+        </clip>
+    </item>
+
+</layer-list>

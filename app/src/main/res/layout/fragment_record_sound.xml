@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".recordSound">
+
+
+    <LinearLayout
+        android:id="@+id/recLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/flame_style"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playBtnImage">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/flame_rec_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/frameLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/recordTimeBar"
+            app:layout_constraintStart_toStartOf="@+id/soundLevelBar">
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:background="@drawable/button_norecording"
+                android:minHeight="0dp"
+                android:text="@string/recordingText"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_recording"
+                android:minHeight="0dp"
+                android:text="@string/recordingText"
+                android:textSize="12dp"
+                app:backgroundTint="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="497dp" />
+
+        </FrameLayout>
+
+        <ProgressBar
+            android:id="@+id/recordTimeBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle_shape"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="65"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recordTimeText" />
+
+
+        <TextView
+            android:id="@+id/recordTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/recordTimeText"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/markerWavText"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="#969678"
+            android:gravity="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/recordTimeBar"
+            app:layout_constraintEnd_toEndOf="@+id/recordTimeBar"
+            app:layout_constraintStart_toStartOf="@+id/recordTimeBar"
+            app:layout_constraintTop_toTopOf="@+id/recordTimeBar" />
+
+        <TextView
+            android:id="@+id/soundLevelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/soundLevelText"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@+id/recordTimeBar"
+            app:layout_constraintTop_toTopOf="@+id/recordTimeText" />
+
+        <ProgressBar
+            android:id="@+id/soundLevelBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/custom_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/soundLevelText"
+            app:layout_constraintTop_toBottomOf="@+id/soundLevelText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/recordBtnText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/recordBtnText"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/recordBtnImage"
+        app:layout_constraintTop_toTopOf="@+id/recordBtnImage" />
+
+    <ImageView
+        android:id="@+id/recordBtnImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/arecordbtn"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <TextView
+        android:id="@+id/newRecortBtnText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/newRecordText"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/newRecordBtnImage"
+        app:layout_constraintTop_toTopOf="@+id/newRecordBtnImage" />
+
+    <ImageView
+        android:id="@+id/playBtnImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/playbtn"
+        app:layout_constraintStart_toStartOf="@+id/recordBtnImage"
+        app:layout_constraintTop_toBottomOf="@+id/recordBtnImage" />
+
+    <TextView
+        android:id="@+id/playBtnText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/playBtnText"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/playBtnImage"
+        app:layout_constraintTop_toTopOf="@+id/playBtnImage" />
+
+    <ImageView
+        android:id="@+id/stopBtnImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/stopbtn"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/recordBtnImage" />
+
+    <TextView
+        android:id="@+id/stopBtnText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/stopBtnText"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/stopBtnImage"
+        app:layout_constraintTop_toTopOf="@+id/stopBtnImage" />
+
+    <ImageView
+        android:id="@+id/newRecordBtnImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/newrecordbtn"
+        app:layout_constraintStart_toStartOf="@+id/stopBtnImage"
+        app:layout_constraintTop_toTopOf="@+id/playBtnImage" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
