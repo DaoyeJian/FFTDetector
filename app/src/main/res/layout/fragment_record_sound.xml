@@ -86,7 +86,7 @@
                 android:minHeight="0dp"
                 android:text="@string/recordingText"
                 android:textColor="@color/white"
-                android:textSize="12dp"
+                android:textSize="16dp"
                 app:backgroundTint="@null" />
 
             <Button
@@ -96,7 +96,7 @@
                 android:background="@drawable/button_recording"
                 android:minHeight="0dp"
                 android:text="@string/recordingText"
-                android:textSize="12dp"
+                android:textSize="16dp"
                 app:backgroundTint="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -186,6 +186,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:src="@drawable/arecordbtn"
+        android:contentDescription="record"
         app:layout_constraintEnd_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
@@ -205,6 +206,7 @@
         android:layout_height="80dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/playbtn"
+        android:contentDescription="play"
         app:layout_constraintStart_toStartOf="@+id/recordBtnImage"
         app:layout_constraintTop_toBottomOf="@+id/recordBtnImage" />
 
@@ -224,6 +226,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="24dp"
         android:src="@drawable/stopbtn"
+        android:contentDescription="stop"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/recordBtnImage" />
 
@@ -242,6 +245,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/newrecordbtn"
+        android:contentDescription="newrecord"
         app:layout_constraintStart_toStartOf="@+id/stopBtnImage"
         app:layout_constraintTop_toTopOf="@+id/playBtnImage" />
 

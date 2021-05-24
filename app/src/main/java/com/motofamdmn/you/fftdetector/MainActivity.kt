@@ -1,3 +1,6 @@
+//FFT Detector version 2.0.1
+//2021.5.24 更新
+
 package com.motofamdmn.you.fftdetector
 
 import android.Manifest

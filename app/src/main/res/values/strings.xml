@@ -22,8 +22,8 @@
     <string name="zfcText">f2</string>
     <string name="zfiText">f3</string>
     <string name="fbx2Text">f4</string>
-    <string name="downBtnText"><![CDATA[<]]></string>
-    <string name="upBtnText"><![CDATA[>]]></string>
+    <string name="downBtnText">DOWN</string>
+    <string name="upBtnText">UP</string>
     <string name="termAndConditionsText">利用規約及びプライバシーポリシー</string>
     <string name="ossLicenseText">オープンソースライセンス</string>
     <string name="versionInfoText">バージョン情報</string>
@@ -33,6 +33,6 @@
     <string name="analizePointText">Analysis Point</string>
     <string name="sideBandText">Side</string>
     <string name="maxRecortTimeText">MAX RECORD TIME : 20 sec</string>
-    <string name="privacyPolictyUrlText">http://motofam-dmn.readymade.jp/privacy_policy.html</string>
+    <string name="privacyPolictyUrlText">http://motofam-dmn.tech/fftdetector/privacy_policy.html</string>
 
 </resources>
