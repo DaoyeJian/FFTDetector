@@ -6,6 +6,7 @@ import android.media.AudioRecord
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment
 import java.io.IOException
 import kotlin.collections.ArrayList
 import kotlinx.android.synthetic.main.fragment_record_sound.*
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -129,7 +131,7 @@ class recordSound : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.wav"
+        //fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.wav"
         var stopBtnFlg = 0  //録音停止か再生停止かのフラグ、0が録音停止、1が再生停止
         var newRecordFlg = 1  //新規の録音のときは1
 
@@ -216,7 +218,32 @@ class recordSound : Fragment() {
         var nextXPosition : Float = 0.0f
         // wavのデータサイズ
         var dataSize : Int = 0
+        // 外部ストレージ使用可否のﾌﾗｸﾞ
+        var flag = 0
+
         wav1.apply{maxData = 0.0f}
+
+        //外部ストレージ使用可否確認
+        if(isExternalStorageReadable()){
+            flag = 1
+            Log.e(LOG_TAG, "外部ストレージ利用可能")
+        }else{
+            flag = 0
+            Log.e(LOG_TAG, "外部ストレージ利用不可")
+        }
+
+        val mydirName = "testwav" // 保存フォルダー
+        val ExtFileName = "sample2.wav" // ファイル名
+
+        fileName = extFilePath(mydirName, ExtFileName)
+
+        // フォルダーを使用する場合、あるかを確認
+        val myDir = File(Environment.getExternalStorageDirectory(), mydirName)
+        if (!myDir.exists()) {
+            // なければ、フォルダーを作る
+            myDir.mkdirs()
+            Log.e(LOG_TAG, "フォルダ作成")
+        }
 
         wav1.createFile(fileName)
         //wav1.createFile(SoundDefine.filePath)
@@ -321,6 +348,18 @@ class recordSound : Fragment() {
     private fun stopPlaying() {
         player?.release()
         player = null
+    }
+
+    // 外部ストレージが読み取り可能かどうかをチェック
+    fun isExternalStorageReadable(): Boolean{
+        val state = Environment.getExternalStorageState()
+        return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
+    }
+
+    // 現在の外部ストレージのログ・ファイル名(パス含め)
+    fun extFilePath(mydirName : String, ExtFileName : String): String{
+        val myDir = Environment.getExternalStorageDirectory().getPath() +"/"+mydirName
+        return  myDir+"/"+ ExtFileName
     }
 
 
