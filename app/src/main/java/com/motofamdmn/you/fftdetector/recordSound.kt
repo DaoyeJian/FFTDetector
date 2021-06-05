@@ -232,7 +232,7 @@ class recordSound : Fragment() {
             Log.e(LOG_TAG, "外部ストレージ利用不可")
         }
 
-        val mydirName = "testwav" // 保存フォルダー
+        val mydirName = "testwave" // 保存フォルダー
         val ExtFileName = "sample2.wav" // ファイル名
         var dirFlag = 0
 
@@ -300,7 +300,7 @@ class recordSound : Fragment() {
                     nextXPosition = nextXPosition + DRAW_WAV_INTERVAL
                 }
 
-                if(xPosition > 20.0){
+                if(xPosition > 300.0){
                     stopAudioRecord()  //20秒を超えたら録音停止
                     handler.removeCallbacks(updateTime);
                     val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
