@@ -234,16 +234,24 @@ class recordSound : Fragment() {
 
         val mydirName = "testwav" // 保存フォルダー
         val ExtFileName = "sample2.wav" // ファイル名
-
-        fileName = extFilePath(mydirName, ExtFileName)
+        var dirFlag = 0
 
         // フォルダーを使用する場合、あるかを確認
-        val myDir = File(Environment.getExternalStorageDirectory(), mydirName)
+        val myDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), mydirName)
         if (!myDir.exists()) {
             // なければ、フォルダーを作る
-            myDir.mkdirs()
+            if(myDir.mkdirs()){
+                dirFlag = 1
+                Log.e(LOG_TAG, "フォルダ作成成功")
+            }else{
+                dirFlag = 0
+                Log.e(LOG_TAG, "フォルダ作成失敗")
+            }
             Log.e(LOG_TAG, "フォルダ作成")
         }
+
+        //fileName = myDir.toString() + ExtFileName
+        fileName = extFilePath(mydirName, ExtFileName)
 
         wav1.createFile(fileName)
         //wav1.createFile(SoundDefine.filePath)
@@ -356,11 +364,16 @@ class recordSound : Fragment() {
         return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
     }
 
-    // 現在の外部ストレージのログ・ファイル名(パス含め)
+    // 現在の外部MUSICストレージのログ・ファイル名(パス含め)
     fun extFilePath(mydirName : String, ExtFileName : String): String{
-        val myDir = Environment.getExternalStorageDirectory().getPath() +"/"+mydirName
+        val myDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/"+mydirName
         return  myDir+"/"+ ExtFileName
     }
 
+    // 現在の外部ストレージのログ・ファイル名(パス含め)
+    //fun extFilePath(mydirName : String, ExtFileName : String): String{
+    //    val myDir = Environment.getExternalStorageDirectory().getPath() +"/"+mydirName
+    //    return  myDir+"/"+ ExtFileName
+    //}
 
 }
