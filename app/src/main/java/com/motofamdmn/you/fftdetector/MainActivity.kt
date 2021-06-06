@@ -19,23 +19,52 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "AudioRecordTest"
 
-    private val REQUEST_RECORD_AUDIO_PERMISSION = 200
+    private val REQUEST_PERMISSION_ID = 200
 
     private var permissionToRecordAccepted = false
-    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
+    private var permissionToWriteExternalStorageAccepted = false
 
-    // 録音のパーミッション確認
+    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    // 録音と外部ストレージ書込みのパーミッション確認
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionToRecordAccepted = if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        } else {
-            false
+        if (requestCode == REQUEST_PERMISSION_ID) {
+            // 識別IDでリクエストを判断
+            if (grantResults.isNotEmpty()) {
+                // 処理された
+                for (i in permissions.indices) {
+                    // 複数リクエストがあった場合
+                    if (permissions[i] == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                        // 外部ストレージのパーミッション
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            permissionToWriteExternalStorageAccepted = true
+                        } else {
+                            // 拒否
+                        }
+                    }
+                    if (permissions[i] == Manifest.permission.RECORD_AUDIO) {
+                        // 録音のパーミッション
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            permissionToRecordAccepted = true
+                        } else {
+                            // 拒否
+                        }
+                    }
+
+                }
+            }
         }
+
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //permissionToRecordAccepted = if (requestCode == REQUEST_PERMISSION_ID) {
+        //    grantResults[0] == PackageManager.PERMISSION_GRANTED
+        //} else {
+        //    false
+        //}
         if (!permissionToRecordAccepted) finish()
     }
 
@@ -101,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         //toolbar.setLogo(R.drawable.ic_launcher_foreground)
 
         // 録音のパーミッションリクエスト
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ID)
 
         val fragmentManager = this.getSupportFragmentManager()
 

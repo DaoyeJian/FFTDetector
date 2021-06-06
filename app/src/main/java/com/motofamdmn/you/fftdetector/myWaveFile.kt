@@ -130,12 +130,12 @@ class myWaveFile {
         var temp : Float = 0.0f
 
         // wav波形を描画するためにX軸とY軸データを格納
-        for(i in shortData.indices){
+        /*for(i in shortData.indices){
             count++
             temp = count.toFloat()/SAMPLING_RATE.toFloat()  //tempには現在のX軸の時間を格納、単位100msec
             wavXData.add(temp)
             wavYData.add(shortData[i]*100/32768.toFloat())  //wavデータ格納、符号付き16bit(-32768～32767)のパーセンテージとする
-        }  //wavデータ格納
+        }*/  //wavデータ格納
 
         // ファイルサイズを更新
         updateFileSize()
