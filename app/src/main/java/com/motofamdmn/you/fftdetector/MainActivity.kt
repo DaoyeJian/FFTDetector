@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_PERMISSION_ID = 200
 
-    private var permissionToRecordAccepted = false
-    private var permissionToWriteExternalStorageAccepted = false
+    private var permissionToRecordAccepted = false  //録音パーミッションフラグ
+    private var permissionToWriteExternalStorageAccepted = false  //外部ストレージ書込みパーミッションフラグ
 
     private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                     if (permissions[i] == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                         // 外部ストレージのパーミッション
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            //許可
                             permissionToWriteExternalStorageAccepted = true
                         } else {
                             // 拒否
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                     if (permissions[i] == Manifest.permission.RECORD_AUDIO) {
                         // 録音のパーミッション
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            //許可
                             permissionToRecordAccepted = true
                         } else {
                             // 拒否
