@@ -30,6 +30,9 @@ class fileOpenFragment : Fragment() {
     private lateinit var realm: Realm
     private lateinit var sch: RealmResults<myFiles>
 
+    //全フラグメントからアクセス可能の共通データ
+    private val cd = commonData.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -80,6 +83,9 @@ class fileOpenFragment : Fragment() {
             override fun onItemClickListener(view: View, position: Int) {
                 val selectedMyFile = sch.get(position)
                 val selectedFileName = selectedMyFile?.fileName
+                if (selectedFileName != null) {
+                    cd.cdFileName = selectedFileName
+                }
                 Toast.makeText(context, "${selectedFileName}がタップされました", Toast.LENGTH_LONG).show()
             }
         })

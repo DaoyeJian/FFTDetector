@@ -4,6 +4,7 @@ import java.lang.Boolean
 
 class commonData {
 
+    var cdFileName : String = ""
 
     var shareWavXData = arrayListOf<Float>()
     var shareWavYData = arrayListOf<Float>()

@@ -58,6 +58,7 @@ class recordSound : Fragment() {
     // wavデータの初期化
     private var dataWav = Pair(arrayListOf<Float>(), arrayListOf<Float>())
 
+    private lateinit var myDir : File
     private var fileName: String = ""
 
     private var player: MediaPlayer? = null
@@ -238,7 +239,7 @@ class recordSound : Fragment() {
         var dirFlag = 0
 
         // フォルダーを使用する場合、あるかを確認
-        val myDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), mydirName)
+        myDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), mydirName)
         if (!myDir.exists()) {
             // なければ、フォルダーを作る
             if(myDir.mkdirs()){
@@ -253,6 +254,7 @@ class recordSound : Fragment() {
 
         //fileName = myDir.toString() + ExtFileName
         fileName = extFilePath(mydirName, ExtFileName)
+        cd.cdFileName = fileName
 
         //mydirNameディレクトリのファイルリスト作成
         val myFileList = myDir.list()
@@ -344,6 +346,8 @@ class recordSound : Fragment() {
 
     //再生する
     private fun startPlaying() {
+
+        fileName = myDir.toString()+"/"+ cd.cdFileName
 
         //wavファイルを再生する
         player = MediaPlayer().apply {
