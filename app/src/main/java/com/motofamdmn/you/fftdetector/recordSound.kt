@@ -233,7 +233,8 @@ class recordSound : Fragment() {
         }
 
         val mydirName = "testwave" // 保存フォルダー
-        val ExtFileName = "sample2.wav" // ファイル名
+        val ExtFileName = "sample.wav" // ファイル名
+
         var dirFlag = 0
 
         // フォルダーを使用する場合、あるかを確認
@@ -252,6 +253,9 @@ class recordSound : Fragment() {
 
         //fileName = myDir.toString() + ExtFileName
         fileName = extFilePath(mydirName, ExtFileName)
+
+        //mydirNameディレクトリのファイルリスト作成
+        val myFileList = myDir.list()
 
         wav1.createFile(fileName)
         //wav1.createFile(SoundDefine.filePath)

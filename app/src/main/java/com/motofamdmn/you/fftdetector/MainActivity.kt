@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity() {
                 val rSFg = fragmentManager.findFragmentByTag("recordSoundFragment")
                 val fAFg = fragmentManager.findFragmentByTag("fftAnalisysFragment")
                 val sCFg = fragmentManager.findFragmentByTag("setConditionFragment")
+                val fOFg = fragmentManager.findFragmentByTag("fileOpenFragment")
 
                 when (tabPosition) {
                     0 -> {
@@ -171,6 +172,9 @@ class MainActivity : AppCompatActivity() {
                         }
                         if (sCFg != null && tPosition == 2) {
                             mfragmentTransaction.hide(sCFg)
+                        }
+                        if (fOFg != null && tPosition == 3) {
+                            mfragmentTransaction.hide(fOFg)
                         }
                         if (rSFg != null) {
                             mfragmentTransaction.show(rSFg)
@@ -197,6 +201,9 @@ class MainActivity : AppCompatActivity() {
                         if (sCFg != null && tPosition == 2) {
                             mfragmentTransaction.hide(sCFg)
                         }
+                        if (fOFg != null && tPosition == 3) {
+                            mfragmentTransaction.hide(fOFg)
+                        }
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
                         } else {
@@ -211,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
                     }
 
-                    else -> {
+                    2 -> {
                         val sFragment = setCondition()
                         val mfragmentTransaction = fragmentManager.beginTransaction().setTransition(
                             FragmentTransaction.TRANSIT_FRAGMENT_OPEN
@@ -223,6 +230,9 @@ class MainActivity : AppCompatActivity() {
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
                             //mfragmentTransaction.hide(fAFg)
+                        }
+                        if (fOFg != null && tPosition == 3) {
+                            mfragmentTransaction.hide(fOFg)
                         }
                         if (sCFg != null) {
                             mfragmentTransaction.show(sCFg)
@@ -237,6 +247,37 @@ class MainActivity : AppCompatActivity() {
                         tPosition = 2
 
                     }
+
+                    else -> {
+                        val fOFragment = fileOpenFragment()
+                        val mfragmentTransaction = fragmentManager.beginTransaction().setTransition(
+                            FragmentTransaction.TRANSIT_FRAGMENT_OPEN
+                        )
+
+                        if (rSFg != null && tPosition == 0) {
+                            mfragmentTransaction.hide(rSFg)
+                        }
+                        if (fAFg != null) {
+                            mfragmentTransaction.remove(fAFg)
+                            //mfragmentTransaction.hide(fAFg)
+                        }
+                        if (sCFg != null && tPosition == 2) {
+                            mfragmentTransaction.hide(sCFg)
+                        }
+                        if (fOFg != null) {
+                            mfragmentTransaction.show(fOFg)
+                        }else {
+                            mfragmentTransaction.add(
+                                R.id.container,
+                                fOFragment,
+                                "fileOpenFragment"
+                            )
+                        }
+                        mfragmentTransaction.commit()
+                        tPosition = 3
+
+                    }
+
                 }
 
             }
