@@ -7,6 +7,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -14,10 +16,16 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.tabs.TabLayout
+import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "AudioRecordTest"
+
+    private lateinit var realm: Realm
 
     private val REQUEST_PERMISSION_ID = 200
 
@@ -133,6 +141,54 @@ class MainActivity : AppCompatActivity() {
 
         // 録音のパーミッションリクエスト
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ID)
+
+        realm = Realm.getDefaultInstance()
+        val files = realm.where<myFiles>().findAll()
+
+        //データ保存フォルダ
+        var dirFlag = 0
+        val mydirName = "testwave"
+
+        // フォルダーを使用する場合、あるかを確認
+        val myDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+            mydirName
+        )
+        if (!myDir.exists()) {
+            Log.d("DIR", "フォルダ無し")
+            // なければ、フォルダーを作る
+            if (myDir.mkdirs()) {
+                dirFlag = 1
+                Log.d("DIR", "フォルダ作成成功")
+            } else {
+                dirFlag = 0
+                Log.d("DIR", "フォルダ作成失敗")
+            }
+        }else{
+            Log.d("DIR", "フォルダ有り")
+        }
+
+        val myFileList = myDir.list()  //myDirフォルダのファイルリスト格納
+        var tempFileName : String = ""
+        var tempFileSize : Int = 0
+        var tempFilePath = ""
+        var fileNum = myFileList.size
+
+        if(fileNum != 0) {
+            for (i in 0..fileNum - 1) {
+                tempFilePath = myDir.getPath() + "/" + myFileList[i]
+                val tempFile = File(tempFilePath)
+
+                realm.executeTransaction { db: Realm ->
+                    val maxId = db.where<myFiles>().max("id")
+                    val nextId = (maxId?.toLong() ?: 0L) + 1
+                    val myFile = db.createObject<myFiles>(nextId)
+                    myFile.fileName = myFileList[i]
+                    myFile.fileSize = tempFile.length()
+                }
+
+            }
+        }
 
         val fragmentManager = this.getSupportFragmentManager()
 
