@@ -5,22 +5,23 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import java.io.IOException
-import kotlin.collections.ArrayList
 import kotlinx.android.synthetic.main.fragment_record_sound.*
 import java.io.File
+import java.io.IOException
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,8 +102,8 @@ class recordSound : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
 
         // Inflate the layout for this fragment
@@ -212,6 +213,7 @@ class recordSound : Fragment() {
 
 
     //AudioRecordの初期化
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initAudioRecord() {
 
         val DRAW_WAV_INTERVAL : Float = 0.1f  //wav波形を描画するインターバル（秒）兼プログレスバー更新のインターバル
@@ -234,7 +236,13 @@ class recordSound : Fragment() {
         }
 
         val mydirName = "testwave" // 保存フォルダー
-        val ExtFileName = "sample.wav" // ファイル名
+        //val ExtFileName = "sample.wav" // ファイル名
+        //現在日時をファイル名にする
+        val currentLdt = LocalDateTime.now()
+        val currentZdt: ZonedDateTime = currentLdt.atZone(ZoneId.of("Asia/Tokyo"))
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+        val formatted = currentZdt.format(formatter)
+        val ExtFileName = formatted + ".wav"
 
         var dirFlag = 0
 
@@ -263,22 +271,22 @@ class recordSound : Fragment() {
         //wav1.createFile(SoundDefine.filePath)
         // AudioRecordオブジェクトを作成
         bufSize = AudioRecord.getMinBufferSize(
-            SAMPLING_RATE,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT
+                SAMPLING_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT
         )
         audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            SAMPLING_RATE,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT,
-            bufSize
+                MediaRecorder.AudioSource.MIC,
+                SAMPLING_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufSize
         )
         shortData = ShortArray(bufSize / 2)
 
         // コールバックを指定
         audioRecord!!.setRecordPositionUpdateListener(object :
-            AudioRecord.OnRecordPositionUpdateListener {
+                AudioRecord.OnRecordPositionUpdateListener {
             // フレームごとの処理
             override fun onPeriodicNotification(recorder: AudioRecord) {
                 // TODO Auto-generated method stub
@@ -288,25 +296,25 @@ class recordSound : Fragment() {
                 dataSize = wav1.getDataSize()
                 // xPosition 現在のwav波形時間
                 xPosition = dataSize.toFloat() / (SAMPLING_RATE * 2)  //1秒はサンプリング周波数 x 2 byte　なのでxPositionは0.1秒刻み
-                var tempStr : String = ""
-                var tempAverageData : Float = 0.0f
+                var tempStr: String = ""
+                var tempAverageData: Float = 0.0f
 
                 if (xPosition > nextXPosition) {
 
-                    tempAverageData = wav1.get16PointsMaxWaveData(dataSize/2) * 10  ////録音レベルをパーセンテージ表示、プログレスバーの1000が100%なので10倍する
-                    if(tempAverageData > maxData) {
+                    tempAverageData = wav1.get16PointsMaxWaveData(dataSize / 2) * 10  ////録音レベルをパーセンテージ表示、プログレスバーの1000が100%なので10倍する
+                    if (tempAverageData > maxData) {
                         maxData = tempAverageData
                     }
-                    if(tempAverageData >= 900.0f){
+                    if (tempAverageData >= 900.0f) {
                         soundLevelBar.progress = tempAverageData.toInt()  //録音レベルをパーセンテージ表示
-                    }else {
+                    } else {
                         soundLevelBar.progress = 0  //録音レベルをパーセンテージ表示
                         soundLevelBar.secondaryProgress = tempAverageData.toInt()  //録音レベルをパーセンテージ表示
                     }
                     nextXPosition = nextXPosition + DRAW_WAV_INTERVAL
                 }
 
-                if(xPosition > 300.0){
+                if (xPosition > 300.0) {
                     stopAudioRecord()  //20秒を超えたら録音停止
                     handler.removeCallbacks(updateTime);
                     val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
@@ -373,7 +381,7 @@ class recordSound : Fragment() {
     }
 
     // 現在の外部MUSICストレージのログ・ファイル名(パス含め)
-    fun extFilePath(mydirName : String, ExtFileName : String): String{
+    fun extFilePath(mydirName: String, ExtFileName: String): String{
         val myDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/"+mydirName
         return  myDir+"/"+ ExtFileName
     }
