@@ -142,8 +142,12 @@ class MainActivity : AppCompatActivity() {
         // 録音のパーミッションリクエスト
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ID)
 
+        //realmデータベース
         realm = Realm.getDefaultInstance()
         val files = realm.where<myFiles>().findAll()
+
+        //全フラグメントからアクセス可能の共通データ
+        val cd = commonData.getInstance()
 
         //データ保存フォルダ
         var dirFlag = 0
@@ -178,6 +182,8 @@ class MainActivity : AppCompatActivity() {
             for (i in 0..fileNum - 1) {
                 tempFilePath = myDir.getPath() + "/" + myFileList[i]
                 val tempFile = File(tempFilePath)
+                val tempWav = myWavRead()
+                tempWav.read(myFileList[i])
 
                 realm.executeTransaction { db: Realm ->
                     val maxId = db.where<myFiles>().max("id")
@@ -185,6 +191,9 @@ class MainActivity : AppCompatActivity() {
                     val myFile = db.createObject<myFiles>(nextId)
                     myFile.fileName = myFileList[i]
                     myFile.fileSize = tempFile.length()
+                    myFile.stereoMonoral = cd.stereoMonoral
+                    myFile.sampleRate = cd.sampleRate
+                    myFile.dataBit = cd.dataBits
                 }
 
             }

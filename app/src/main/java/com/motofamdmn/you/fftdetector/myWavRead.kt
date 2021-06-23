@@ -1,6 +1,8 @@
 package com.motofamdmn.you.fftdetector
 
+import android.os.Environment
 import android.util.Log
+import io.realm.Realm
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -9,6 +11,7 @@ class myWavRead {
 
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
+
     private var stereoMonoral : Int = 0  //0：モノラル、 1：ステレオ
     private var sampleRate : Int = 0  //サンプリングレート
     private var dataBit : Int = 0  //データが8ビットか16ビットか
@@ -29,7 +32,8 @@ class myWavRead {
         var dat: Int = 0
 
         // WAVファイルを開く
-        val myFile = File(fileName)
+        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
+        val myFile = File(fileNamePath)
         val myFileSize = myFile.length()
         val file = FileInputStream(myFile)
 
@@ -140,6 +144,7 @@ class myWavRead {
             } else if (bufTemp == 1) {
                 stereoMonoral = 0
             }
+            cd.stereoMonoral = stereoMonoral
 
             //サンプリング周波数
             idx += readSize
@@ -153,6 +158,7 @@ class myWavRead {
             }
 
             sampleRate = bufTempStr.toInt(16)
+            cd.sampleRate = sampleRate
 
             //1秒あたりのバイト数平均はとばす
             idx += readSize
@@ -171,6 +177,7 @@ class myWavRead {
             } else if (bufTemp == 8) {
                 dataBit = 8
             }
+            cd.dataBits = dataBit
 
             flg = 0
 
