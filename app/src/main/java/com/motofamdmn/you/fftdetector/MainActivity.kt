@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
+    private val HEADER_ONLY = 1
+
     // 録音と外部ストレージ書込みのパーミッション確認
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -183,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 tempFilePath = myDir.getPath() + "/" + myFileList[i]
                 val tempFile = File(tempFilePath)
                 val tempWav = myWavRead()
-                tempWav.read(myFileList[i])
+                tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
 
                 realm.executeTransaction { db: Realm ->
                     val maxId = db.where<myFiles>().max("id")

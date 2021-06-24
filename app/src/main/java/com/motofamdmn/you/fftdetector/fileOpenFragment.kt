@@ -34,6 +34,9 @@ class fileOpenFragment : Fragment() {
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
 
+    private val HEADER_ONLY = 1
+    private val READ_DATA = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -91,8 +94,10 @@ class fileOpenFragment : Fragment() {
 
                 //選択したwavファイルデータをshareWavYDataへ読込
                 val mWav = myWavRead()
-                val selectedFileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+selectedFileName
-                mWav.read(selectedFileNamePath)
+                //val selectedFileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+selectedFileName
+                if (selectedFileName != null) {
+                    mWav.read(selectedFileName, READ_DATA)
+                }  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
             }
         })
 

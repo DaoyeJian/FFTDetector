@@ -17,7 +17,7 @@ class myWavRead {
     private var dataBit : Int = 0  //データが8ビットか16ビットか
     private var wavDataSize = 0  //wavデータのサイズ
 
-    fun read(fileName : String ) {
+    fun read(fileName : String, headerOnly : Int ) {
 
         // ByteArrayOutputStreamの生成
         val byteArrayOutputStream = ByteArrayOutputStream()
@@ -217,44 +217,46 @@ class myWavRead {
                 Log.d("fmt:", bufTempStr)
             }
 
-            flg = 0
+            if(headerOnly!=1){
 
-            // data本体読込
-            idx += readSize
-            wavDataSize = fSize - idx
-            val dataPointsOf20Sec = sampleRate * 3  //3秒分のデータ数
-            for(i in 0..65535){  //今の位置から65536*2バイト分読み込む（buffer2は2バイト分の読込）
-                readSize = file.read(buffer2)
+                flg = 0
+
+                // data本体読込
                 idx += readSize
-            }
-
-            //データクリア
-            cd.shareWavXData.clear()
-            cd.shareWavYData.clear()
-            //while(idx < fSize) {
-            for (j in 0..dataPointsOf20Sec - 1) {
-                // データの読み込み
-                readSize = file.read(buffer2)
-                idx += readSize
-                bufTempStr = ""
-
-                bufTemp = buffer2[1].toInt() and 0xFF
-                if (bufTemp < 16) bufTempStr += "0"
-                bufTempStr += bufTemp.toString(16)
-                bufTemp = buffer2[0].toInt() and 0xFF
-                if (bufTemp < 16) bufTempStr += "0"
-                bufTempStr += bufTemp.toString(16)
-                ddd = bufTempStr.toInt(16)
-
-                bufTemp = ddd and 0x8000
-                dat = ddd and 0x7FFF
-                if (bufTemp == 0x8000) {
-                    dat = -(32768 - dat)
+                wavDataSize = fSize - idx
+                val dataPointsOf20Sec = sampleRate * 3  //3秒分のデータ数
+                for(i in 0..65535){  //今の位置から65536*2バイト分読み込む（buffer2は2バイト分の読込）
+                    readSize = file.read(buffer2)
+                    idx += readSize
                 }
-                cd.shareWavXData.add(j.toFloat() / sampleRate)
-                cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
-            }
-//            }
+
+                //データクリア
+                cd.shareWavXData.clear()
+                cd.shareWavYData.clear()
+                //while(idx < fSize) {
+                for (j in 0..dataPointsOf20Sec - 1) {
+                    // データの読み込み
+                    readSize = file.read(buffer2)
+                    idx += readSize
+                    bufTempStr = ""
+
+                    bufTemp = buffer2[1].toInt() and 0xFF
+                    if (bufTemp < 16) bufTempStr += "0"
+                    bufTempStr += bufTemp.toString(16)
+                    bufTemp = buffer2[0].toInt() and 0xFF
+                    if (bufTemp < 16) bufTempStr += "0"
+                    bufTempStr += bufTemp.toString(16)
+                    ddd = bufTempStr.toInt(16)
+
+                    bufTemp = ddd and 0x8000
+                    dat = ddd and 0x7FFF
+                    if (bufTemp == 0x8000) {
+                        dat = -(32768 - dat)
+                    }
+                    cd.shareWavXData.add(j.toFloat() / sampleRate)
+                    cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
+                }
+           }
             // close処理
             file.close()
             byteArrayOutputStream.close()
