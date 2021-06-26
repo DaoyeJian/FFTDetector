@@ -160,11 +160,12 @@ class recordSound : Fragment() {
         textView15.text = "  CHANNEL : MONORAL "
         textView16.text = "  MAX RECORD TIME : 20 SEC "
 
-        //AudioRecordの初期化
-        initAudioRecord()
+
 
         recordBtnImage.setOnClickListener {
             if(newRecordFlg == 1) {
+                //AudioRecordの初期化
+                initAudioRecord()
                 xPosition = 0.0f
                 recordTimeBar.progress = 0
                 newRecordFlg = 0
@@ -179,10 +180,12 @@ class recordSound : Fragment() {
 
         stopBtnImage.setOnClickListener {
             if(stopBtnFlg == 0){
-                stopAudioRecord()
-                button.isVisible = false  //録音中ボタンの非表示
-                button2.isVisible = true  //非録音中ボタンの表示
-                handler.removeCallbacks(updateTime);
+                if(cd.cdFileName != "") {
+                    stopAudioRecord()
+                    button.isVisible = false  //録音中ボタンの非表示
+                    button2.isVisible = true  //非録音中ボタンの表示
+                    handler.removeCallbacks(updateTime);
+                }
             }else{
                 stopPlaying()
             }
@@ -190,8 +193,10 @@ class recordSound : Fragment() {
 
         playBtnImage.setOnClickListener {
             //wavファイルを再生する
-            stopBtnFlg = 1
-            startPlaying()
+            if(cd.cdFileName != "") {
+                stopBtnFlg = 1
+                startPlaying()
+            }
         }
 
         newRecordBtnImage.setOnClickListener {
@@ -199,7 +204,6 @@ class recordSound : Fragment() {
             soundLevelBar.progress = 0
             soundLevelBar.secondaryProgress = 0
 
-            initAudioRecord()
             count = 0
             newRecordFlg = 1
             markerWavText.text = "%.0f".format(0f)
@@ -210,22 +214,9 @@ class recordSound : Fragment() {
 
         }//新しいwavファイル作成
 
-    }
-
-
-    //AudioRecordの初期化
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAudioRecord() {
-
-        val DRAW_WAV_INTERVAL : Float = 0.1f  //wav波形を描画するインターバル（秒）兼プログレスバー更新のインターバル
-        // nextPosition 次のプログレスバー更新の時間
-        var nextXPosition : Float = 0.0f
-        // wavのデータサイズ
-        var dataSize : Int = 0
         // 外部ストレージ使用可否のﾌﾗｸﾞ
         var flag = 0
-
-        wav1.apply{maxData = 0.0f}
+        var dirFlag = 0
 
         //外部ストレージ使用可否確認
         if(isExternalStorageReadable()){
@@ -237,15 +228,6 @@ class recordSound : Fragment() {
         }
 
         val mydirName = "testwave" // 保存フォルダー
-        //val ExtFileName = "sample.wav" // ファイル名
-        //現在日時をファイル名にする
-        val currentLdt = LocalDateTime.now()
-        val currentZdt: ZonedDateTime = currentLdt.atZone(ZoneId.of("Asia/Tokyo"))
-        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-        val formatted = currentZdt.format(formatter)
-        val ExtFileName = formatted + ".wav"
-
-        var dirFlag = 0
 
         // フォルダーを使用する場合、あるかを確認
         myDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), mydirName)
@@ -261,9 +243,33 @@ class recordSound : Fragment() {
             Log.e(LOG_TAG, "フォルダ作成")
         }
 
+    }
+
+
+    //AudioRecordの初期化
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initAudioRecord() {
+
+        val DRAW_WAV_INTERVAL : Float = 0.1f  //wav波形を描画するインターバル（秒）兼プログレスバー更新のインターバル
+        // nextPosition 次のプログレスバー更新の時間
+        var nextXPosition : Float = 0.0f
+        // wavのデータサイズ
+        var dataSize : Int = 0
+
+        val mydirName = "testwave" // 保存フォルダー
+
+        wav1.apply{maxData = 0.0f}
+
+        //現在日時をファイル名にする
+        val currentLdt = LocalDateTime.now()
+        val currentZdt: ZonedDateTime = currentLdt.atZone(ZoneId.of("Asia/Tokyo"))
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+        val formatted = currentZdt.format(formatter)
+        val ExtFileName = formatted + ".wav"
+
         //fileName = myDir.toString() + ExtFileName
         fileName = extFilePath(mydirName, ExtFileName)
-        cd.cdFileName = fileName
+        cd.cdFileName = ExtFileName
 
         //mydirNameディレクトリのファイルリスト作成
         val myFileList = myDir.list()
@@ -356,16 +362,18 @@ class recordSound : Fragment() {
     //再生する
     private fun startPlaying() {
 
-        fileName = myDir.toString()+"/"+ cd.cdFileName
+        if(cd.cdFileName != ""){
+            fileName = myDir.toString()+"/"+ cd.cdFileName
 
-        //wavファイルを再生する
-        player = MediaPlayer().apply {
-            try {
-                setDataSource(fileName)
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Log.e(LOG_TAG, "prepare() failed")
+            //wavファイルを再生する
+            player = MediaPlayer().apply {
+                try {
+                    setDataSource(fileName)
+                    prepare()
+                    start()
+                } catch (e: IOException) {
+                    Log.e(LOG_TAG, "prepare() failed")
+                }
             }
         }
     }

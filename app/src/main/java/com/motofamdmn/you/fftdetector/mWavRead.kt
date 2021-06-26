@@ -6,8 +6,9 @@ import io.realm.Realm
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import kotlinx.android.synthetic.main.fragment_file_open.*
 
-class myWavRead {
+class mWavRead {
 
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
@@ -255,6 +256,7 @@ class myWavRead {
                     }
                     cd.shareWavXData.add(j.toFloat() / sampleRate)
                     cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
+
                 }
            }
             // close処理

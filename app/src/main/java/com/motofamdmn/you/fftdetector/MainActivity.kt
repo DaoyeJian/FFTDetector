@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
             for (i in 0..fileNum - 1) {
                 tempFilePath = myDir.getPath() + "/" + myFileList[i]
                 val tempFile = File(tempFilePath)
-                val tempWav = myWavRead()
+                val tempWav = mWavRead()
                 tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
 
                 realm.executeTransaction { db: Realm ->
