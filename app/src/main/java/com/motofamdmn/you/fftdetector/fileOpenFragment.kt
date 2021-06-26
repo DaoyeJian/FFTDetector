@@ -339,10 +339,9 @@ class fileOpenFragment : Fragment() {
                     readMaxPoint = fSize -2
                 }
 
-                //for(i in 0..65535){  //今の位置から65536*2バイト分読み込む（buffer2は2バイト分の読込）
-                //    readSize = file.read(buffer2)
-                //    idx += readSize
-                //}
+                //プログレスバーを初期化
+                fileReadProgressBar.max = readMaxPoint
+                fileReadProgressBar.progress = 0
 
                 //データクリア
                 cd.shareWavXData.clear()
@@ -368,8 +367,7 @@ class fileOpenFragment : Fragment() {
                     }
                     cd.shareWavXData.add(j.toFloat() / sampleRate)
                     cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
-                    fileReadProgress = idx.toFloat() / fSize.toFloat()
-                    fileReadProgressBar.progress = (fileReadProgress * 100.0f).toInt()
+                    fileReadProgressBar.progress = idx
                     j += 1
                 }
             }

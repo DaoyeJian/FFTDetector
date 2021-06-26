@@ -15,6 +15,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_record_sound.*
 import java.io.File
 import java.io.IOException
@@ -42,6 +45,9 @@ class recordSound : Fragment() {
 
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
+
+    //ファイルリストのためのrealm
+    private lateinit var realm: Realm
 
     //現在の録音位置
     var xPosition : Float =  0.0f
@@ -99,6 +105,9 @@ class recordSound : Fragment() {
         cd.shareWavYData.add(0.0f)
         cd.shareWavYData.add(0.0f)
 
+        //ファイルリストのためのrealm
+        realm = Realm.getDefaultInstance()
+
     }
 
     override fun onCreateView(
@@ -137,6 +146,7 @@ class recordSound : Fragment() {
         //fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.wav"
         var stopBtnFlg = 0  //録音停止か再生停止かのフラグ、0が録音停止、1が再生停止
         var newRecordFlg = 1  //新規の録音のときは1
+        var recordContinueFlg = 0 //録音継続中は1
 
         //Recordingボタンを非表示に
         button.isVisible = false  //録音中ボタンの非表示
@@ -179,14 +189,34 @@ class recordSound : Fragment() {
         }//レコードボタンリスナの設定
 
         stopBtnImage.setOnClickListener {
-            if(stopBtnFlg == 0){
+            if(stopBtnFlg == 0){  //0は録音停止
                 if(cd.cdFileName != "") {
                     stopAudioRecord()
                     button.isVisible = false  //録音中ボタンの非表示
                     button2.isVisible = true  //非録音中ボタンの表示
                     handler.removeCallbacks(updateTime);
+                    if(recordContinueFlg == 0){  //0は新規録音、1は追加録音
+                        realm.executeTransaction { db: Realm ->
+                            val maxId = db.where<myFiles>().max("id")
+                            val nextId = (maxId?.toLong() ?: 0L) + 1
+                            val myFile = db.createObject<myFiles>(nextId)
+                            myFile.fileName = cd.cdFileName
+                            myFile.fileSize = wav1.getDataSize().toLong() + 44
+                            myFile.stereoMonoral = cd.stereoMonoral
+                            myFile.sampleRate = cd.sampleRate
+                            myFile.dataBit = cd.dataBits
+                        }
+                        recordContinueFlg = 1
+                    }else{  //recordContinueFlgが1で追加録音の場合
+                        realm.executeTransaction { db: Realm ->
+                            val maxId = db.where<myFiles>().max("id")
+                            val myFile = db.where(myFiles::class.java).equalTo("id",maxId.toString()).findFirst()
+                            myFile?.fileName = cd.cdFileName
+                            myFile?.fileSize = wav1.getDataSize().toLong() + 44
+                        }
+                    }
                 }
-            }else{
+            }else{  //stopBtnFlgが0ではなく1、つまり再生停止
                 stopPlaying()
             }
         }
@@ -206,6 +236,7 @@ class recordSound : Fragment() {
 
             count = 0
             newRecordFlg = 1
+            recordContinueFlg = 0
             markerWavText.text = "%.0f".format(0f)
             //サンプリングレートとデータ数を更新
             textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
