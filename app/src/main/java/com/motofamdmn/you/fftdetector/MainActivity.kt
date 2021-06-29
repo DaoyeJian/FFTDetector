@@ -235,13 +235,12 @@ class MainActivity : AppCompatActivity() {
                         )
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
-                            mfragmentTransaction.hide(fAFg)
                         }
                         if (sCFg != null && tPosition == 2) {
                             mfragmentTransaction.hide(sCFg)
                         }
                         if (fOFg != null && tPosition == 3) {
-                            mfragmentTransaction.hide(fOFg)
+                            mfragmentTransaction.remove(fOFg)
                         }
                         if (rSFg != null) {
                             mfragmentTransaction.show(rSFg)
@@ -269,7 +268,7 @@ class MainActivity : AppCompatActivity() {
                             mfragmentTransaction.hide(sCFg)
                         }
                         if (fOFg != null && tPosition == 3) {
-                            mfragmentTransaction.hide(fOFg)
+                            mfragmentTransaction.remove(fOFg)
                         }
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
@@ -296,10 +295,9 @@ class MainActivity : AppCompatActivity() {
                         }
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
-                            //mfragmentTransaction.hide(fAFg)
                         }
                         if (fOFg != null && tPosition == 3) {
-                            mfragmentTransaction.hide(fOFg)
+                            mfragmentTransaction.remove(fOFg)
                         }
                         if (sCFg != null) {
                             mfragmentTransaction.show(sCFg)
@@ -326,13 +324,12 @@ class MainActivity : AppCompatActivity() {
                         }
                         if (fAFg != null) {
                             mfragmentTransaction.remove(fAFg)
-                            //mfragmentTransaction.hide(fAFg)
                         }
                         if (sCFg != null && tPosition == 2) {
                             mfragmentTransaction.hide(sCFg)
                         }
                         if (fOFg != null) {
-                            mfragmentTransaction.show(fOFg)
+                            mfragmentTransaction.remove(fOFg)
                         }else {
                             mfragmentTransaction.add(
                                 R.id.container,

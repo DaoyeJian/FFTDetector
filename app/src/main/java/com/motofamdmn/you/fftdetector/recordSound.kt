@@ -210,7 +210,7 @@ class recordSound : Fragment() {
                     }else{  //recordContinueFlgが1で追加録音の場合
                         realm.executeTransaction { db: Realm ->
                             val maxId = db.where<myFiles>().max("id")
-                            val myFile = db.where(myFiles::class.java).equalTo("id",maxId.toString()).findFirst()
+                            val myFile = db.where<myFiles>().equalTo("id",maxId?.toLong()).findFirst()
                             myFile?.fileName = cd.cdFileName
                             myFile?.fileSize = wav1.getDataSize().toLong() + 44
                         }
@@ -352,7 +352,7 @@ class recordSound : Fragment() {
                     nextXPosition = nextXPosition + DRAW_WAV_INTERVAL
                 }
 
-                if (xPosition > 300.0) {
+                if (xPosition > 20.0) {
                     stopAudioRecord()  //20秒を超えたら録音停止
                     handler.removeCallbacks(updateTime);
                     val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
