@@ -1,21 +1,25 @@
 package com.motofamdmn.you.fftdetector
 
-import android.os.Bundle
-import android.os.Environment
+import android.content.Context
+import android.os.*
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_file_open.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.async
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,8 +42,26 @@ class fileOpenFragment : Fragment() {
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
 
+    private var idx: Int = 0  //ファイル読込位置
+
     private val HEADER_ONLY = 1
     private val READ_DATA = 0
+
+    //コルーチン
+    var job: Deferred<Unit>? = null
+
+    // 'Handler()' is deprecated as of API 30: Android 11.0 (R)
+    val handler: Handler = Handler(Looper.getMainLooper())
+    var period : Int = 500  //100は0.1秒
+
+    //periodで設定した時間ごとに録音時間とプログレスバーを更新
+    val updateTime: Runnable = object : Runnable {
+        override fun run() {
+            fileReadProgressBar.progress = idx
+            indexText.text = idx.toString()
+            handler.postDelayed(this, period.toLong())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +73,8 @@ class fileOpenFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_file_open, container, false)
@@ -86,21 +108,27 @@ class fileOpenFragment : Fragment() {
         val adapter = CustomRecyclerViewAdapter(sch)
         list.adapter = adapter
 
+        indexText.text = idx.toString()
+
         // インターフェースの実装
-        adapter.setOnItemClickListener(object:CustomRecyclerViewAdapter.OnItemClickListener{
+        adapter.setOnItemClickListener(object : CustomRecyclerViewAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int) {
                 val selectedMyFile = sch.get(position)
                 val selectedFileName = selectedMyFile?.fileName
                 if (selectedFileName != null) {
                     cd.cdFileName = selectedFileName
-                }
-                Toast.makeText(context, "${selectedFileName}がタップされました", Toast.LENGTH_LONG).show()
+                    fileReadProgressBar.progress = 0
+                    val myWavFileSize = getFileSize(selectedFileName)
+                    fileReadProgressBar.max = myWavFileSize.toInt()
+                    handler.post(updateTime)
 
-                //選択したwavファイルデータをshareWavYDataへ読込
-                val mWav = mWavRead()
-                //val selectedFileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+selectedFileName
-                if (selectedFileName != null) {
-                    myWavRead(selectedFileName, READ_DATA)
+                    //選択したwavファイルデータをshareWavYDataへ読込
+                    // async関数の戻り（Deferred型）を受け取る
+                    job = async {
+                        // myTaskメソッドの呼び出し
+                        myWavRead(selectedFileName, READ_DATA)
+                    }
+
                 }  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
             }
         })
@@ -108,7 +136,21 @@ class fileOpenFragment : Fragment() {
 
     }
 
-    fun myWavRead(fileName : String, headerOnly : Int ) {
+    fun getFileSize(fileName: String) : Long {
+
+        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
+        val myFile = File(fileNamePath)
+        val myFileSize = myFile.length()
+
+        return myFileSize
+    }
+
+    suspend fun myWavRead(fileName: String, headerOnly: Int) {
+
+        // onPreExecuteと同等の処理
+        async(UI) {
+            Toast.makeText(context, "${fileName}を読込中", Toast.LENGTH_LONG).show()
+        }
 
         //全フラグメントからアクセス可能の共通データ
         val cd = commonData.getInstance()
@@ -117,6 +159,7 @@ class fileOpenFragment : Fragment() {
         var sampleRate : Int = 0  //サンプリングレート
         var dataBit : Int = 0  //データが8ビットか16ビットか
         var wavDataSize = 0  //wavデータのサイズ
+        idx = 0 //idxを初期化
 
         //fun read(fileName : String, headerOnly : Int ) {
 
@@ -128,12 +171,9 @@ class fileOpenFragment : Fragment() {
         var bufTemp: Int = 0
         var bufTempStr = ""
         var readSize: Int = 0
-        var idx: Int = 0
         var ddd: Int = 0
         var dat: Int = 0
         var fileReadProgress : Float = 0f
-        fileReadProgressBar.progress = 0
-
 
         // WAVファイルを開く
         val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
@@ -341,7 +381,6 @@ class fileOpenFragment : Fragment() {
 
                 //プログレスバーを初期化
                 fileReadProgressBar.max = readMaxPoint
-                fileReadProgressBar.progress = 0
 
                 //データクリア
                 cd.shareWavXData.clear()
@@ -367,7 +406,6 @@ class fileOpenFragment : Fragment() {
                     }
                     cd.shareWavXData.add(j.toFloat() / sampleRate)
                     cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
-                    fileReadProgressBar.progress = idx
                     j += 1
                 }
             }
@@ -378,5 +416,14 @@ class fileOpenFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        // onPostExecuteメソッドと同等の処理
+        async(UI) {
+            fileReadProgressBar.progress = idx
+            indexText.text = idx.toString()
+            Toast.makeText(context, "${fileName}を読込完了", Toast.LENGTH_LONG).show()
+            handler.removeCallbacks(updateTime)
+        }
     }
+
 }
