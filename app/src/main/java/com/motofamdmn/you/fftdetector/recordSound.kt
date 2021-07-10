@@ -205,6 +205,7 @@ class recordSound : Fragment() {
                             myFile.stereoMonoral = cd.stereoMonoral
                             myFile.sampleRate = cd.sampleRate
                             myFile.dataBit = cd.dataBits
+                            myFile.wavDataTime = wav1.getWavDataTime()
                         }
                         recordContinueFlg = 1
                     }else{  //recordContinueFlgが1で追加録音の場合
@@ -213,6 +214,7 @@ class recordSound : Fragment() {
                             val myFile = db.where<myFiles>().equalTo("id",maxId?.toLong()).findFirst()
                             myFile?.fileName = cd.cdFileName
                             myFile?.fileSize = wav1.getDataSize().toLong() + 44
+                            myFile?.wavDataTime = wav1.getWavDataTime()
                         }
                     }
                 }

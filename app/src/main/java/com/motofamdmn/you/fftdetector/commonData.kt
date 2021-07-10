@@ -7,6 +7,7 @@ class commonData {
     var cdFileName : String = ""
     var stereoMonoral : Int = 0
     var dataBits : Int = 0
+    var wavDataTime : Int = 0
 
     var shareWavXData = arrayListOf<Float>()
     var shareWavYData = arrayListOf<Float>()

@@ -34,6 +34,7 @@ class myWaveFile {
     ) //wavファイルリフチャンクに書き込むチャンクID用
 
     private var fileSize = 36
+    private var wavDataTime = 0
     private val WAVE =
         byteArrayOf('W'.toByte(), 'A'.toByte(), 'V'.toByte(), 'E'.toByte()) //WAV形式でRIFFフォーマットを使用する
 
@@ -161,6 +162,13 @@ class myWaveFile {
     fun getDataSize(): Int {
         dataSize = (recFile!!.length() - 44).toInt()  //dataSizeはビッグエンディアンで最初が上位バイト
         return(dataSize)
+
+    }
+
+    // WAVデータの時間を取得（秒で返す）
+    fun getWavDataTime(): Int {
+        wavDataTime = ((recFile!!.length())/(bitPerSample/8)/chCount/SAMPLING_RATE).toInt()
+        return(wavDataTime)
 
     }
 

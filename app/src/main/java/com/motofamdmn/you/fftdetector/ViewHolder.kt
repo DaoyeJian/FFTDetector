@@ -13,6 +13,7 @@ class ViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
     var stereoMonoralText: TextView? = null
     var dataBitText: TextView? = null
     var fileSizeText : TextView? = null
+    var wavDataTimeText : TextView? = null
 
     init{
 
@@ -22,6 +23,8 @@ class ViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
         dataBitText = itemView.dataBit_text_list
         stereoMonoralText = itemView.stereoMonoral_text_list
         fileSizeText = itemView.fileSize_text_list
+        wavDataTimeText = itemView.wavDataTime_text_list
+
 
     }
 

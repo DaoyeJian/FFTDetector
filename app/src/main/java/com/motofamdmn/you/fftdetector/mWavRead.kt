@@ -17,6 +17,8 @@ class mWavRead {
     private var sampleRate : Int = 0  //サンプリングレート
     private var dataBit : Int = 0  //データが8ビットか16ビットか
     private var wavDataSize = 0  //wavデータのサイズ
+    private var wavDataTime = 0 //wavデータの時間（秒数）
+    var isWavFileFlg : Int = 1  //WAVE（"57415645"）などを検出したかどうかのフラグ、1ならWAVEファイルとみなす
 
     fun read(fileName : String, headerOnly : Int ) {
 
@@ -35,7 +37,7 @@ class mWavRead {
         // WAVファイルを開く
         val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
         val myFile = File(fileNamePath)
-        val myFileSize = myFile.length()
+        val myFileSize = myFile.length().toInt()
         val file = FileInputStream(myFile)
 
         try {
@@ -60,6 +62,13 @@ class mWavRead {
                     //RIFF形式であることを検出"
                     flg = 1
                 }
+
+                //8192byteを超えても識別子が読み込めない場合はwavファイルとみなさない
+                if(idx > 8192){
+                    isWavFileFlg = 0
+                    flg = 1
+                }
+
             }
 
             //ファイル全体サイズ
@@ -72,7 +81,8 @@ class mWavRead {
                 bufTempStr += bufTemp.toString(16)
 
             }
-            val fSize = bufTempStr.toInt(16) + 8
+            /*val fSize = bufTempStr.toInt(16) + 8*/
+            val fSize = myFileSize  //上記for文でサイズ読み込んだがサンプルレート8kHzのときうまく読めないのでmyFileSizeをつかう
 
             flg = 0
 
@@ -94,8 +104,16 @@ class mWavRead {
 
                 if (bufTempStr == "57415645") {
                     //WAVE形式を検出
+                    isWavFileFlg = 1
                     flg = 1
                 }
+
+                //8192byteを超えても識別子が読み込めない場合はwavファイルとみなさない
+                if(idx > 8192){
+                    isWavFileFlg = 0
+                    flg = 1
+                }
+
             }
 
             flg = 0
@@ -120,6 +138,13 @@ class mWavRead {
                     //fmt形式検出
                     flg = 1
                 }
+
+                //8192byteを超えても識別子が読み込めない場合はwavファイルとみなさない
+                if(idx > 8192){
+                    isWavFileFlg = 0
+                    flg = 1
+                }
+
             }
 
 
@@ -203,6 +228,14 @@ class mWavRead {
                     //DATA形式を検出
                     flg = 1
                 }
+
+                //8192byteを超えても識別子が読み込めない場合はwavファイルとみなさない
+                if(idx > 8192){
+                    isWavFileFlg = 0
+                    flg = 1
+                }
+
+
             }
 
             //波形データのバイト数
@@ -214,9 +247,11 @@ class mWavRead {
 
                 bufTemp = buffer4[j].toInt() and 0xFF
                 bufTempStr += bufTemp.toString(16)
-                // ログの出力
-                Log.d("fmt:", bufTempStr)
+
             }
+
+            wavDataSize = fSize - idx
+            cd.wavDataTime = wavDataSize/(dataBit/8)/(stereoMonoral + 1)/sampleRate
 
             if(headerOnly!=1){
 
@@ -224,7 +259,6 @@ class mWavRead {
 
                 // data本体読込
                 idx += readSize
-                wavDataSize = fSize - idx
                 val dataPointsOf20Sec = sampleRate * 3  //3秒分のデータ数
                 for(i in 0..65535){  //今の位置から65536*2バイト分読み込む（buffer2は2バイト分の読込）
                     readSize = file.read(buffer2)

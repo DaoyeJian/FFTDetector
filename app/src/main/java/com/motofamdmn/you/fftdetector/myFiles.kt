@@ -12,5 +12,6 @@ open class myFiles: RealmObject() {
     var sampleRate : Int = 0
     var stereoMonoral : Int = 0
     var dataBit : Int = 0
+    var wavDataTime : Int = 0
 
 }
