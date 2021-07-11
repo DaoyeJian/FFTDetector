@@ -203,6 +203,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //サンプリングレートとデータビットを初期値に戻す
+        cd.sampleRate = 44100  //44.1kHz
+        cd.dataBits = 16  //16bit
+        cd.stereoMonoral = 0  //0:Monoral, 1:Stereo
+
         val fragmentManager = this.getSupportFragmentManager()
 
         //録音フラグメント（recordSound）の生成,tagをrecordFragmentとする

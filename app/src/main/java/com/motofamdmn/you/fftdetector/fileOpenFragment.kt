@@ -178,7 +178,7 @@ class fileOpenFragment : Fragment() {
         // WAVファイルを開く
         val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
         val myFile = File(fileNamePath)
-        val myFileSize = myFile.length()
+        val myFileSize = myFile.length().toInt()
         val file = FileInputStream(myFile)
 
         try {
@@ -215,7 +215,8 @@ class fileOpenFragment : Fragment() {
                 bufTempStr += bufTemp.toString(16)
 
             }
-            val fSize = bufTempStr.toInt(16) + 8
+            /*val fSize = bufTempStr.toInt(16) + 8*/
+            val fSize = myFileSize  //上記for文でサイズ読み込んだがサンプルレート8kHzのときうまく読めないのでmyFileSizeをつかう
 
             flg = 0
 

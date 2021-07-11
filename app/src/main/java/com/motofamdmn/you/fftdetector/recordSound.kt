@@ -166,7 +166,7 @@ class recordSound : Fragment() {
 
         //サンプリングレートとデータ数を表示
         textView4.text = "  SAMPLING RATE :  ${(cd.sampleRate/1000.0f).toString()} kHz "
-        textView5.text = "  DATA BIT : 16 BIT "
+        textView5.text = "  DATA BIT : ${cd.dataBits.toString()}  BIT "
         textView15.text = "  CHANNEL : MONORAL "
         textView16.text = "  MAX RECORD TIME : 20 SEC "
 
