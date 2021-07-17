@@ -28,11 +28,16 @@ class CustomRecyclerViewAdapter (realmResults: RealmResults<myFiles>): RecyclerV
         val files = rResults[position]
         holder.fileNameText?.text = files?.fileName.toString()
         holder.idText?.text = files?.id.toString()
-        holder.sampleRateText?.text = files?.sampleRate.toString()
-        holder.dataBitText?.text = files?.dataBit.toString()
-        holder.fileSizeText?.text = files?.fileSize.toString()
-        holder.wavDataTimeText?.text = files?.wavDataTime.toString()
-        holder.stereoMonoralText?.text = files?.stereoMonoral.toString()
+        holder.sampleRateText?.text = "${files?.sampleRate.toString()}Hz"
+        holder.dataBitText?.text = "${files?.dataBit.toString()}Bit"
+        holder.fileSizeText?.text = "${files?.fileSize.toString()}Byte"
+        holder.wavDataTimeText?.text = "${files?.wavDataTime.toString()}sec"
+        if(files?.stereoMonoral == 0){
+            holder.stereoMonoralText?.text = "MONORAL"
+        }else{
+            holder.stereoMonoralText?.text = "STEREO"
+        }
+        //holder.stereoMonoralText?.text = files?.stereoMonoral.toString()
         holder.itemView.setBackgroundColor(if (position % 2 == 0) Color.LTGRAY else Color.WHITE)
 
         // タップしたとき
