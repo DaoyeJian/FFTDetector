@@ -4,6 +4,8 @@ import java.lang.Boolean
 
 class commonData {
 
+    var newRecordFileFlg : Int = 0  //録音フラグメント遷移時に録音ファイルを新しくするかどうか、0:新しくしない、1:新しくする
+
     var cdFileName : String = ""
     var stereoMonoral : Int = 0
     var dataBits : Int = 0

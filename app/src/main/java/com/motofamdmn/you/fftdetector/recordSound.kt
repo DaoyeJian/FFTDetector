@@ -85,7 +85,7 @@ class recordSound : Fragment() {
         override fun run() {
             markerWavText.text = "%.0f".format(xPosition)
             recordTimeBar.progress = (xPosition * 10).toInt()  //xPositionは0.1秒刻みなのでプログレスバー表示のためには10倍する
-
+            recFileNameText.text = "  RECORD FILE NAME :  ${cd.cdFileName} kHz "
             handler.postDelayed(this, period.toLong())
         }
     }
@@ -165,6 +165,7 @@ class recordSound : Fragment() {
         //soundLevelBar.secondaryProgress = 80  //secondaryは今は使わないのでコメントアウト
 
         //サンプリングレートとデータ数を表示
+        recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
         textView4.text = "  SAMPLING RATE :  ${(cd.sampleRate/1000.0f).toString()} kHz "
         textView5.text = "  DATA BIT : ${cd.dataBits.toString()}  BIT "
         textView15.text = "  CHANNEL : MONORAL "
@@ -241,6 +242,7 @@ class recordSound : Fragment() {
             recordContinueFlg = 0
             markerWavText.text = "%.0f".format(0f)
             //サンプリングレートとデータ数を更新
+            recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
             textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
             textView5.text = " DATA BIT : 16 BIT "
             textView15.text = " CHANNEL : MONORAL "

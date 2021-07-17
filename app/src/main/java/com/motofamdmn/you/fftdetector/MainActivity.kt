@@ -249,9 +249,9 @@ class MainActivity : AppCompatActivity() {
                         if (fOFg != null && tPosition == 3) {
                             mfragmentTransaction.remove(fOFg)
                         }
-                        if (rSFg != null) {
+                        if (rSFg != null && cd.newRecordFileFlg == 0) {
                             mfragmentTransaction.show(rSFg)
-                        } else {
+                        }else{
                             mfragmentTransaction.add(
                                 R.id.container,
                                 rFragment,
@@ -260,6 +260,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         mfragmentTransaction.commit()
                         tPosition = 0
+                        cd.newRecordFileFlg = 0
                     }
 
                     1 -> {

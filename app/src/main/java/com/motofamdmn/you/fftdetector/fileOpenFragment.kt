@@ -149,7 +149,7 @@ class fileOpenFragment : Fragment() {
 
         // onPreExecuteと同等の処理
         async(UI) {
-            Toast.makeText(context, "${fileName}を読込中", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "${fileName}を読込中", Toast.LENGTH_SHORT).show()
         }
 
         //全フラグメントからアクセス可能の共通データ
@@ -424,6 +424,7 @@ class fileOpenFragment : Fragment() {
             indexText.text = idx.toString()
             Toast.makeText(context, "${fileName}を読込完了", Toast.LENGTH_LONG).show()
             handler.removeCallbacks(updateTime)
+            cd.newRecordFileFlg = 1 //録音画面に遷移した際には録音ファイルを新しくする
         }
     }
 
