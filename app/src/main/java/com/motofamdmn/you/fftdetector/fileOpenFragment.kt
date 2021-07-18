@@ -1,6 +1,7 @@
 package com.motofamdmn.you.fftdetector
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,16 +10,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.mikephil.charting.charts.Chart.LOG_TAG
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_file_open.*
+import kotlinx.android.synthetic.main.fragment_record_sound.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.async
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,6 +45,11 @@ class fileOpenFragment : Fragment() {
     private lateinit var realm: Realm
     private lateinit var sch: RealmResults<myFiles>
 
+    //再生用
+    private var player: MediaPlayer? = null
+    private val dataFormat: SimpleDateFormat = SimpleDateFormat("mm:ss", Locale.US)
+    private var totalTime : Int = 0
+
     //全フラグメントからアクセス可能の共通データ
     private val cd = commonData.getInstance()
 
@@ -53,12 +64,24 @@ class fileOpenFragment : Fragment() {
     // 'Handler()' is deprecated as of API 30: Android 11.0 (R)
     val handler: Handler = Handler(Looper.getMainLooper())
     var period : Int = 500  //100は0.1秒
+    var playTime : Int = 0  //現在の再生時間
 
     //periodで設定した時間ごとに録音時間とプログレスバーを更新
     val updateTime: Runnable = object : Runnable {
         override fun run() {
             fileReadProgressBar.progress = idx
             indexText.text = idx.toString()
+            handler.postDelayed(this, period.toLong())
+        }
+    }
+
+    //periodで設定した時間ごとに再生時間を更新
+    val updatePlayTime: Runnable = object : Runnable {
+        override fun run() {
+            if (playTime < totalTime) {
+                playTime += 500
+                playTimeText.text = dataFormat.format(playTime)
+            }
             handler.postDelayed(this, period.toLong())
         }
     }
@@ -108,7 +131,29 @@ class fileOpenFragment : Fragment() {
         val adapter = CustomRecyclerViewAdapter(sch)
         list.adapter = adapter
 
+        foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
         indexText.text = idx.toString()
+        playTimeText.text = dataFormat.format(0).toString()
+        totalTimeText.text = "/${dataFormat.format(0).toString()}"
+
+        //再生ボタンクリック時
+        foPlayBtn.setOnClickListener {
+            //wavファイルを再生する
+            if(cd.cdFileName != "") {
+                playTime = 0
+                startPlaying()
+                handler.post(updatePlayTime)
+            }
+        }
+
+        //停止ボタンクリック時
+        foStopBtn.setOnClickListener {
+            //wavファイルを再生する
+            if(cd.cdFileName != "") {
+                stopPlaying()
+                handler.removeCallbacks(updatePlayTime)
+            }
+        }
 
         // インターフェースの実装
         adapter.setOnItemClickListener(object : CustomRecyclerViewAdapter.OnItemClickListener {
@@ -117,6 +162,8 @@ class fileOpenFragment : Fragment() {
                 val selectedFileName = selectedMyFile?.fileName
                 if (selectedFileName != null) {
                     cd.cdFileName = selectedFileName
+                    totalTime = selectedMyFile?.wavDataTime?.times(1000)
+                    totalTimeText.text = "/${dataFormat.format(totalTime)}"
                     fileReadProgressBar.progress = 0
                     val myWavFileSize = getFileSize(selectedFileName)
                     fileReadProgressBar.max = myWavFileSize.toInt()
@@ -426,6 +473,36 @@ class fileOpenFragment : Fragment() {
             handler.removeCallbacks(updateTime)
             cd.newRecordFileFlg = 1 //録音画面に遷移した際には録音ファイルを新しくする
         }
+    }
+
+    //再生する
+    private fun startPlaying() {
+
+        if(cd.cdFileName != ""){
+            val fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+cd.cdFileName
+
+            //wavファイルを再生する
+            player = MediaPlayer().apply {
+                try {
+                    setDataSource(fileName)
+                    prepare()
+                    start()
+                    setOnCompletionListener { mp -> audioStop() }  //再生終了時のリスナー（Handlerを止める）
+                } catch (e: IOException) {
+                    Log.e(LOG_TAG, "prepare() failed")
+                }
+            }
+        }
+    }
+
+    //再生終了時のリスナー（Handlerを止める）
+    private fun audioStop(){
+        handler.removeCallbacks(updatePlayTime)
+    }
+
+    private fun stopPlaying() {
+        player?.release()
+        player = null
     }
 
 }
