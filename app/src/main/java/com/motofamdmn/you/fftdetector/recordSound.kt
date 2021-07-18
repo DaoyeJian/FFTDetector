@@ -85,7 +85,7 @@ class recordSound : Fragment() {
         override fun run() {
             markerWavText.text = "%.0f".format(xPosition)
             recordTimeBar.progress = (xPosition * 10).toInt()  //xPositionは0.1秒刻みなのでプログレスバー表示のためには10倍する
-            recFileNameText.text = "  RECORD FILE NAME :  ${cd.cdFileName} kHz "
+            recFileNameText.text = "  RECORD FILE NAME :  ${cd.cdFileName}"
             handler.postDelayed(this, period.toLong())
         }
     }

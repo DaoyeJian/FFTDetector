@@ -18,6 +18,8 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.fragment_fft_analisys.*
+import kotlinx.android.synthetic.main.fragment_fft_analisys.markerWavText
+import kotlinx.android.synthetic.main.fragment_record_sound.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -110,6 +112,7 @@ class fftAnalisys : Fragment() {
         //wavデータとグラフの初期化
 
         markerWavText.text = "0.0"
+        faFileNameText.text = cd.cdFileName
         drawWav(dataWavX, dataWavY, xWavMarker, yWavMarker)
         lineChartWav.extraLeftOffset = 10.0f;  //Y軸数値が切れないようにオフセット
 
