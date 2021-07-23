@@ -66,7 +66,7 @@ class setCondition : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        //データ数設定
+        //データ数設定 -> 分解能になった
         when (cd.dataPoints) {
             65536 -> {
                 radio65536Btn.isChecked = true

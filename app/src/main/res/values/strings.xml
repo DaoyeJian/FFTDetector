@@ -29,12 +29,13 @@
     <string name="versionInfoText">バージョン情報</string>
     <string name="rectangleText">レクタンギュラ</string>
     <string name="hanningText">ハニング</string>
-    <string name="recordingText">RECORDING</string>
+    <string name="recordingText">REC</string>
     <string name="analizePointText">Analysis Point</string>
     <string name="sideBandText">Side</string>
     <string name="maxRecortTimeText">MAX RECORD TIME : 20 sec</string>
     <string name="privacyPolictyUrlText">http://motofam-dmn.tech/fftdetector/privacy_policy.html</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="longRecordText">長時間録音モード</string>
 
 </resources>

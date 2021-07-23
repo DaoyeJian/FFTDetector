@@ -70,7 +70,6 @@ class fileOpenFragment : Fragment() {
     val updateTime: Runnable = object : Runnable {
         override fun run() {
             fileReadProgressBar.progress = idx
-            indexText.text = idx.toString()
             handler.postDelayed(this, period.toLong())
         }
     }
@@ -80,7 +79,7 @@ class fileOpenFragment : Fragment() {
         override fun run() {
             if (playTime < totalTime) {
                 playTime += 500
-                playTimeText.text = dataFormat.format(playTime)
+                playTimeText.text = "  ${dataFormat.format(playTime)}"
             }
             handler.postDelayed(this, period.toLong())
         }
@@ -131,10 +130,14 @@ class fileOpenFragment : Fragment() {
         val adapter = CustomRecyclerViewAdapter(sch)
         list.adapter = adapter
 
-        foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
-        indexText.text = idx.toString()
-        playTimeText.text = dataFormat.format(0).toString()
-        totalTimeText.text = "/${dataFormat.format(0).toString()}"
+        if(cd.cdFileName == null){
+            foFileNameText.text = "  FILE NAME :  --- "
+            totalTimeText.text = "/${dataFormat.format(0)}"
+        }else {
+            foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
+            totalTimeText.text = "/${dataFormat.format(cd.wavDataTime.times(1000))}"
+        }
+        playTimeText.text = "  ${dataFormat.format(playTime)}"
 
         //再生ボタンクリック時
         foPlayBtn.setOnClickListener {
@@ -162,21 +165,28 @@ class fileOpenFragment : Fragment() {
                 val selectedFileName = selectedMyFile?.fileName
                 if (selectedFileName != null) {
                     cd.cdFileName = selectedFileName
+                    foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
                     totalTime = selectedMyFile?.wavDataTime?.times(1000)
                     totalTimeText.text = "/${dataFormat.format(totalTime)}"
                     fileReadProgressBar.progress = 0
                     val myWavFileSize = getFileSize(selectedFileName)
                     fileReadProgressBar.max = myWavFileSize.toInt()
-                    handler.post(updateTime)
-
-                    //選択したwavファイルデータをshareWavYDataへ読込
-                    // async関数の戻り（Deferred型）を受け取る
-                    job = async {
-                        // myTaskメソッドの呼び出し
-                        myWavRead(selectedFileName, READ_DATA)
+                    if(selectedMyFile.sampleRate != 44100){
+                        cd.shareWavXData.clear()
+                        cd.shareWavYData.clear()
+                        Toast.makeText(context, "サンプリング周波数44.1kHz以外は再生のみ可能です", Toast.LENGTH_LONG).show()
+                    }else {
+                        handler.post(updateTime)
+                        //選択したwavファイルデータをshareWavYDataへ読込
+                        // async関数の戻り（Deferred型）を受け取る
+                        job = async {
+                            // myTaskメソッドの呼び出し
+                            myWavRead(selectedFileName, READ_DATA)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
+                        }
                     }
 
-                }  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
+
+                }
             }
         })
 
@@ -468,7 +478,6 @@ class fileOpenFragment : Fragment() {
         // onPostExecuteメソッドと同等の処理
         async(UI) {
             fileReadProgressBar.progress = idx
-            indexText.text = idx.toString()
             Toast.makeText(context, "${fileName}を読込完了", Toast.LENGTH_LONG).show()
             handler.removeCallbacks(updateTime)
             cd.newRecordFileFlg = 1 //録音画面に遷移した際には録音ファイルを新しくする

@@ -19,12 +19,17 @@ import io.realm.Realm
 import io.realm.kotlin.createObject
 import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.fragment_record_sound.*
+import kotlinx.android.synthetic.main.fragment_record_sound.stopBtnImage
 import java.io.File
 import java.io.IOException
+import java.lang.Boolean.FALSE
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,7 +78,7 @@ class recordSound : Fragment() {
     var maxData = 0.0f
 
     //録音時間のカウント用、Handlerを使って定期的に表示処理をする
-    //private val dataFormat: SimpleDateFormat = SimpleDateFormat("mm:ss.S", Locale.US)
+    private val dataFormat: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
     private var count = 0
     private var period : Int = 100
 
@@ -83,8 +88,8 @@ class recordSound : Fragment() {
     //periodで設定した時間ごとに録音時間とプログレスバーを更新
     private val updateTime: Runnable = object : Runnable {
         override fun run() {
-            markerWavText.text = "%.0f".format(xPosition)
-            recordTimeBar.progress = (xPosition * 10).toInt()  //xPositionは0.1秒刻みなのでプログレスバー表示のためには10倍する
+            markerWavText.text = dataFormat.format(xPosition*1000)
+            //recordTimeBar.progress = (xPosition * 10).toInt()  //xPositionは0.1秒刻みなのでプログレスバー表示のためには10倍する
             recFileNameText.text = "  RECORD FILE NAME :  ${cd.cdFileName}"
             handler.postDelayed(this, period.toLong())
         }
@@ -153,11 +158,12 @@ class recordSound : Fragment() {
         button2.isVisible = true  //非録音中ボタンの表示
 
         //録音時間
-        markerWavText.text = "%.0f".format(0f)
+        markerWavText.text = dataFormat.format(0L)
+        totalRecordTimeText.text = dataFormat.format(0L)
 
         //録音時間プログレスバー id:progressBar
-        recordTimeBar.max = 200
-        recordTimeBar.progress = 0
+        //recordTimeBar.max = 200
+        //recordTimeBar.progress = 0
 
         //録音レベルプログレスバー id:soundLevelBar
         soundLevelBar.max = 1000
@@ -169,22 +175,36 @@ class recordSound : Fragment() {
         textView4.text = "  SAMPLING RATE :  ${(cd.sampleRate/1000.0f).toString()} kHz "
         textView5.text = "  DATA BIT : ${cd.dataBits.toString()}  BIT "
         textView15.text = "  CHANNEL : MONORAL "
-        textView16.text = "  MAX RECORD TIME : 20 SEC "
+        maxRecordTimeText.text = "  MAX RECORD TIME : 20 SEC "
 
+        // 長時間録音モード
+        longRecordSwitch.isChecked = FALSE
+        longRecordSwitch.setOnCheckedChangeListener { _, isChecked ->
 
+                if (isChecked) {
+                    wav1.longRecordFlg = 1
+                    maxRecordTimeText.text = "  MAX RECORD TIME : NO LIMIT "
+                } else {
+                    wav1.longRecordFlg = 0
+                    maxRecordTimeText.text = "  MAX RECORD TIME : 20 SEC "
+                }
+
+        }
 
         recordBtnImage.setOnClickListener {
             if(newRecordFlg == 1) {
                 //AudioRecordの初期化
                 initAudioRecord()
                 xPosition = 0.0f
-                recordTimeBar.progress = 0
+                //recordTimeBar.progress = 0
                 newRecordFlg = 0
-                markerWavText.text = "%.0f".format(0f)
+                markerWavText.text = dataFormat.format(0L)
+                totalRecordTimeText.text = dataFormat.format(0L)
             }
             stopBtnFlg = 0  //録音停止か再生停止か、0は録音停止を意味する
             button.isVisible = true  //録音中ボタンの表示
             button2.isVisible = false  //非録音中ボタンの非表示
+            longRecordSwitch.isClickable = false //長時間録音スイッチを押せなくする
             handler.post(updateTime)
             startAudioRecord()
         }//レコードボタンリスナの設定
@@ -233,19 +253,23 @@ class recordSound : Fragment() {
         }
 
         newRecordBtnImage.setOnClickListener {
-            recordTimeBar.progress = 0
+            //recordTimeBar.progress = 0
             soundLevelBar.progress = 0
             soundLevelBar.secondaryProgress = 0
+            cd.cdFileName = ""
 
             count = 0
             newRecordFlg = 1
             recordContinueFlg = 0
-            markerWavText.text = "%.0f".format(0f)
+            markerWavText.text = dataFormat.format(0L)
+            totalRecordTimeText.text = dataFormat.format(0L)
             //サンプリングレートとデータ数を更新
             recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
             textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
             textView5.text = " DATA BIT : 16 BIT "
             textView15.text = " CHANNEL : MONORAL "
+
+            longRecordSwitch.isClickable = true //長時間録音スイッチを押せるようにする
 
         }//新しいwavファイル作成
 
@@ -356,15 +380,29 @@ class recordSound : Fragment() {
                     nextXPosition = nextXPosition + DRAW_WAV_INTERVAL
                 }
 
-                if (xPosition > 20.0) {
-                    stopAudioRecord()  //20秒を超えたら録音停止
-                    handler.removeCallbacks(updateTime);
-                    val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
-                    // 位置調整
-                    toast.setGravity(Gravity.CENTER, 0, -400)
-                    toast.show()
+                if(longRecordSwitch.isChecked == FALSE) {  //長時間録音モードでないときは20秒でとめる
+                    if (xPosition > 20.0) {
+                        stopAudioRecord()  //20秒を超えたら録音停止
+                        button.isVisible = false  //録音中ボタンの非表示
+                        button2.isVisible = true  //非録音中ボタンの表示
+                        handler.removeCallbacks(updateTime);
+                        val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
+                        // 位置調整
+                        toast.setGravity(Gravity.CENTER, 0, -400)
+                        toast.show()
+                        realm.executeTransaction { db: Realm ->
+                            val maxId = db.where<myFiles>().max("id")
+                            val nextId = (maxId?.toLong() ?: 0L) + 1
+                            val myFile = db.createObject<myFiles>(nextId)
+                            myFile.fileName = cd.cdFileName
+                            myFile.fileSize = wav1.getDataSize().toLong() + 44
+                            myFile.stereoMonoral = cd.stereoMonoral
+                            myFile.sampleRate = cd.sampleRate
+                            myFile.dataBit = cd.dataBits
+                            myFile.wavDataTime = wav1.getWavDataTime()
+                        }
+                    }
                 }
-
             }
 
             override fun onMarkerReached(recorder: AudioRecord) {

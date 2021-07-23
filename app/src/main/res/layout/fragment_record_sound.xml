@@ -12,20 +12,21 @@
     <LinearLayout
         android:id="@+id/recLinearLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/flame_style"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playBtnImage">
+        app:layout_constraintTop_toBottomOf="@+id/longRecordText">
 
         <TextView
             android:id="@+id/recFileNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/white" />
 
@@ -51,7 +52,7 @@
             android:textColor="@color/white" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/maxRecordTimeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white" />
@@ -60,7 +61,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="160dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -74,8 +75,10 @@
             android:id="@+id/frameLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/recordTimeBar"
-            app:layout_constraintStart_toStartOf="@+id/soundLevelBar">
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/soundLevelBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/soundLevelBar">
 
             <Button
                 android:id="@+id/button2"
@@ -105,21 +108,6 @@
 
         </FrameLayout>
 
-        <ProgressBar
-            android:id="@+id/recordTimeBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/circle_shape"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="65"
-            android:progressDrawable="@drawable/circular_progress_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recordTimeText" />
-
 
         <TextView
             android:id="@+id/recordTimeText"
@@ -133,39 +121,65 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/markerWavText"
-            android:layout_width="50dp"
+            android:id="@+id/rsSlashText"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:background="#969678"
             android:gravity="center"
+            android:text="/"
             android:textColor="@android:color/darker_gray"
-            android:textSize="36sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/recordTimeBar"
-            app:layout_constraintEnd_toEndOf="@+id/recordTimeBar"
-            app:layout_constraintStart_toStartOf="@+id/recordTimeBar"
-            app:layout_constraintTop_toTopOf="@+id/recordTimeBar" />
+            app:layout_constraintEnd_toStartOf="@+id/totalRecordTimeText"
+            app:layout_constraintStart_toEndOf="@+id/markerWavText"
+            app:layout_constraintTop_toTopOf="@+id/markerWavText" />
+
+        <TextView
+            android:id="@+id/totalRecordTimeText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="#969678"
+            android:gravity="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/markerWavText" />
+
+        <TextView
+            android:id="@+id/markerWavText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#969678"
+            android:gravity="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/recordTimeText"
+            app:layout_constraintTop_toBottomOf="@+id/recordTimeText" />
 
         <TextView
             android:id="@+id/soundLevelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/soundLevelText"
             android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/recordTimeBar"
-            app:layout_constraintTop_toTopOf="@+id/recordTimeText" />
+            app:layout_constraintStart_toStartOf="@+id/recordTimeText"
+            app:layout_constraintTop_toBottomOf="@+id/markerWavText" />
 
         <ProgressBar
             android:id="@+id/soundLevelBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="33dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
             android:indeterminate="false"
             android:progressDrawable="@drawable/custom_progress"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/frameLayout3"
             app:layout_constraintStart_toStartOf="@+id/soundLevelText"
             app:layout_constraintTop_toBottomOf="@+id/soundLevelText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -184,11 +198,11 @@
         android:id="@+id/recordBtnImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        android:src="@drawable/arecordbtn"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="record"
-        app:layout_constraintEnd_toStartOf="@+id/textView"
+        android:src="@drawable/arecordbtn"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <TextView
@@ -206,8 +220,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/playbtn"
         android:contentDescription="play"
+        android:src="@drawable/playbtn"
         app:layout_constraintStart_toStartOf="@+id/recordBtnImage"
         app:layout_constraintTop_toBottomOf="@+id/recordBtnImage" />
 
@@ -225,10 +239,10 @@
         android:id="@+id/stopBtnImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="24dp"
-        android:src="@drawable/stopbtn"
+        android:layout_marginEnd="80dp"
         android:contentDescription="stop"
-        app:layout_constraintStart_toEndOf="@+id/textView"
+        android:src="@drawable/stopbtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recordBtnImage" />
 
     <TextView
@@ -245,19 +259,30 @@
         android:id="@+id/newRecordBtnImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/newrecordbtn"
         android:contentDescription="newrecord"
+        android:src="@drawable/newrecordbtn"
         app:layout_constraintStart_toStartOf="@+id/stopBtnImage"
         app:layout_constraintTop_toTopOf="@+id/playBtnImage" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/longRecordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        android:layout_marginTop="16dp"
+        android:text="@string/longRecordText"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/playBtnText"
+        app:layout_constraintTop_toBottomOf="@+id/playBtnImage" />
+
+    <Switch
+        android:id="@+id/longRecordSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:thumbTint="@color/myblue"
+        android:trackTint="@color/mygray"
+        app:layout_constraintBottom_toBottomOf="@+id/longRecordText"
+        app:layout_constraintStart_toEndOf="@+id/longRecordText"
+        app:layout_constraintTop_toTopOf="@+id/longRecordText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
