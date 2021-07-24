@@ -158,8 +158,8 @@ class recordSound : Fragment() {
         button2.isVisible = true  //非録音中ボタンの表示
 
         //録音時間
-        markerWavText.text = dataFormat.format(0L)
-        totalRecordTimeText.text = dataFormat.format(0L)
+        markerWavText.text = dataFormat.format(0)
+        totalRecordTimeText.text = dataFormat.format(0)
 
         //録音時間プログレスバー id:progressBar
         //recordTimeBar.max = 200
@@ -198,8 +198,8 @@ class recordSound : Fragment() {
                 xPosition = 0.0f
                 //recordTimeBar.progress = 0
                 newRecordFlg = 0
-                markerWavText.text = dataFormat.format(0L)
-                totalRecordTimeText.text = dataFormat.format(0L)
+                markerWavText.text = dataFormat.format(0)
+                totalRecordTimeText.text = dataFormat.format(0)
             }
             stopBtnFlg = 0  //録音停止か再生停止か、0は録音停止を意味する
             button.isVisible = true  //録音中ボタンの表示
@@ -216,6 +216,8 @@ class recordSound : Fragment() {
                     button.isVisible = false  //録音中ボタンの非表示
                     button2.isVisible = true  //非録音中ボタンの表示
                     handler.removeCallbacks(updateTime);
+                    val tempWavDataTime = wav1.getWavDataTime()
+                    cd.wavDataTime = tempWavDataTime
                     if(recordContinueFlg == 0){  //0は新規録音、1は追加録音
                         realm.executeTransaction { db: Realm ->
                             val maxId = db.where<myFiles>().max("id")
@@ -226,7 +228,7 @@ class recordSound : Fragment() {
                             myFile.stereoMonoral = cd.stereoMonoral
                             myFile.sampleRate = cd.sampleRate
                             myFile.dataBit = cd.dataBits
-                            myFile.wavDataTime = wav1.getWavDataTime()
+                            myFile.wavDataTime = tempWavDataTime
                         }
                         recordContinueFlg = 1
                     }else{  //recordContinueFlgが1で追加録音の場合
@@ -235,7 +237,7 @@ class recordSound : Fragment() {
                             val myFile = db.where<myFiles>().equalTo("id",maxId?.toLong()).findFirst()
                             myFile?.fileName = cd.cdFileName
                             myFile?.fileSize = wav1.getDataSize().toLong() + 44
-                            myFile?.wavDataTime = wav1.getWavDataTime()
+                            myFile?.wavDataTime = tempWavDataTime
                         }
                     }
                 }
@@ -261,8 +263,8 @@ class recordSound : Fragment() {
             count = 0
             newRecordFlg = 1
             recordContinueFlg = 0
-            markerWavText.text = dataFormat.format(0L)
-            totalRecordTimeText.text = dataFormat.format(0L)
+            markerWavText.text = dataFormat.format(0)
+            totalRecordTimeText.text = dataFormat.format(0)
             //サンプリングレートとデータ数を更新
             recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
             textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
@@ -381,11 +383,12 @@ class recordSound : Fragment() {
                 }
 
                 if(longRecordSwitch.isChecked == FALSE) {  //長時間録音モードでないときは20秒でとめる
-                    if (xPosition > 20.0) {
+                    if (xPosition > 20.2) {
                         stopAudioRecord()  //20秒を超えたら録音停止
                         button.isVisible = false  //録音中ボタンの非表示
                         button2.isVisible = true  //非録音中ボタンの表示
-                        handler.removeCallbacks(updateTime);
+                        handler.removeCallbacks(updateTime)
+                        markerWavText.text = dataFormat.format(xPosition*1000)
                         val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
                         // 位置調整
                         toast.setGravity(Gravity.CENTER, 0, -400)
@@ -401,6 +404,7 @@ class recordSound : Fragment() {
                             myFile.dataBit = cd.dataBits
                             myFile.wavDataTime = wav1.getWavDataTime()
                         }
+                        cd.wavDataTime = wav1.getWavDataTime()
                     }
                 }
             }

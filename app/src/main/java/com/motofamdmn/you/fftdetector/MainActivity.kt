@@ -178,14 +178,14 @@ class MainActivity : AppCompatActivity() {
         var tempFileName : String = ""
         var tempFileSize : Int = 0
         var tempFilePath = ""
-        var fileNum = myFileList.size
+        var fileNum = myFileList.size  //myDirフォルダのファイル数
 
         if(fileNum != 0) {
             for (i in 0..fileNum - 1) {
                 tempFilePath = myDir.getPath() + "/" + myFileList[i]
                 val tempFile = File(tempFilePath)
                 val tempWav = mWavRead()
-                tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む
+                tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む、メソッド内でデータをcdに読み込んでいる
                 if(tempWav.isWavFileFlg == 1) {
                     realm.executeTransaction { db: Realm ->
                         val maxId = db.where<myFiles>().max("id")
@@ -207,6 +207,7 @@ class MainActivity : AppCompatActivity() {
         cd.sampleRate = 44100  //44.1kHz
         cd.dataBits = 16  //16bit
         cd.stereoMonoral = 0  //0:Monoral, 1:Stereo
+        cd.wavDataTime = 0 //wavDataTimeは秒
 
         val fragmentManager = this.getSupportFragmentManager()
 

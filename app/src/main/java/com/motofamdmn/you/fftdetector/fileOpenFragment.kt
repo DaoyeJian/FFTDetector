@@ -47,7 +47,7 @@ class fileOpenFragment : Fragment() {
 
     //再生用
     private var player: MediaPlayer? = null
-    private val dataFormat: SimpleDateFormat = SimpleDateFormat("mm:ss", Locale.US)
+    private val dataFormat: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
     private var totalTime : Int = 0
 
     //全フラグメントからアクセス可能の共通データ
@@ -130,12 +130,13 @@ class fileOpenFragment : Fragment() {
         val adapter = CustomRecyclerViewAdapter(sch)
         list.adapter = adapter
 
-        if(cd.cdFileName == null){
+        if(cd.cdFileName == ""){
             foFileNameText.text = "  FILE NAME :  --- "
             totalTimeText.text = "/${dataFormat.format(0)}"
         }else {
             foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
-            totalTimeText.text = "/${dataFormat.format(cd.wavDataTime.times(1000))}"
+            totalTime = cd.wavDataTime * 1000
+            totalTimeText.text = "/${dataFormat.format(totalTime)}"
         }
         playTimeText.text = "  ${dataFormat.format(playTime)}"
 
@@ -166,7 +167,9 @@ class fileOpenFragment : Fragment() {
                 if (selectedFileName != null) {
                     cd.cdFileName = selectedFileName
                     foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
+                    playTimeText.text = "  ${dataFormat.format(0)}"
                     totalTime = selectedMyFile?.wavDataTime?.times(1000)
+                    cd.wavDataTime = totalTime/1000  //totalTimeはミリ秒、wavDataTimeは秒
                     totalTimeText.text = "/${dataFormat.format(totalTime)}"
                     fileReadProgressBar.progress = 0
                     val myWavFileSize = getFileSize(selectedFileName)
@@ -427,7 +430,7 @@ class fileOpenFragment : Fragment() {
                 var j = 0
                 idx += readSize
                 wavDataSize = fSize - idx
-                val dataPointsOf20Sec = idx + sampleRate * 20 * dataBit / 8  //20秒後のデータ位置
+                val dataPointsOf20Sec = idx + sampleRate * 20 * dataBit / 8  * (cd.stereoMonoral + 1 )  //20秒後のデータ位置
                 var readMaxPoint = 0
                 //ファイルサイズ-2byte（fSize-2）と20秒後のデータ位置（dataPointsOf20Sec）比較
                 //小さいほうをreadMaxPointとしてそこまで読み込む
@@ -443,28 +446,56 @@ class fileOpenFragment : Fragment() {
                 //データクリア
                 cd.shareWavXData.clear()
                 cd.shareWavYData.clear()
-                while(idx < readMaxPoint) {
-                    // データの読み込み
-                    readSize = file.read(buffer2)
-                    idx += readSize
-                    bufTempStr = ""
+                if(cd.stereoMonoral == 0) {
+                    while (idx < readMaxPoint) {
+                        // データの読み込み
+                        readSize = file.read(buffer2)
+                        idx += readSize
+                        bufTempStr = ""
 
-                    bufTemp = buffer2[1].toInt() and 0xFF
-                    if (bufTemp < 16) bufTempStr += "0"
-                    bufTempStr += bufTemp.toString(16)
-                    bufTemp = buffer2[0].toInt() and 0xFF
-                    if (bufTemp < 16) bufTempStr += "0"
-                    bufTempStr += bufTemp.toString(16)
-                    ddd = bufTempStr.toInt(16)
+                        bufTemp = buffer2[1].toInt() and 0xFF
+                        if (bufTemp < 16) bufTempStr += "0"
+                        bufTempStr += bufTemp.toString(16)
+                        bufTemp = buffer2[0].toInt() and 0xFF
+                        if (bufTemp < 16) bufTempStr += "0"
+                        bufTempStr += bufTemp.toString(16)
+                        ddd = bufTempStr.toInt(16)
 
-                    bufTemp = ddd and 0x8000
-                    dat = ddd and 0x7FFF
-                    if (bufTemp == 0x8000) {
-                        dat = -(32768 - dat)
+                        bufTemp = ddd and 0x8000
+                        dat = ddd and 0x7FFF
+                        if (bufTemp == 0x8000) {
+                            dat = -(32768 - dat)
+                        }
+                        cd.shareWavXData.add(j.toFloat() / sampleRate)
+                        cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
+                        j += 1
                     }
-                    cd.shareWavXData.add(j.toFloat() / sampleRate)
-                    cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
-                    j += 1
+                }else{
+                    while (idx < readMaxPoint) {
+                        // データの読み込み
+                        readSize = file.read(buffer2)
+                        idx += readSize
+                        bufTempStr = ""
+
+                        bufTemp = buffer2[1].toInt() and 0xFF
+                        if (bufTemp < 16) bufTempStr += "0"
+                        bufTempStr += bufTemp.toString(16)
+                        bufTemp = buffer2[0].toInt() and 0xFF
+                        if (bufTemp < 16) bufTempStr += "0"
+                        bufTempStr += bufTemp.toString(16)
+                        ddd = bufTempStr.toInt(16)
+
+                        bufTemp = ddd and 0x8000
+                        dat = ddd and 0x7FFF
+                        if (bufTemp == 0x8000) {
+                            dat = -(32768 - dat)
+                        }
+                        readSize = file.read(buffer2)
+                        idx += readSize
+                        cd.shareWavXData.add(j.toFloat() / sampleRate)
+                        cd.shareWavYData.add(dat.toFloat() / 1000000.0f)
+                        j += 1
+                    }
                 }
             }
             // close処理
