@@ -35,7 +35,7 @@ class mWavRead {
         var dat: Int = 0
 
         // WAVファイルを開く
-        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
+        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/fftdetector/"+fileName
         val myFile = File(fileNamePath)
         val myFileSize = myFile.length().toInt()
         val file = FileInputStream(myFile)

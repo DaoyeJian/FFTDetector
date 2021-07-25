@@ -319,7 +319,7 @@ class recordSound : Fragment() {
         // wavのデータサイズ
         var dataSize : Int = 0
 
-        val mydirName = "testwave" // 保存フォルダー
+        val mydirName = "fftdetector" // 保存フォルダー
 
         wav1.apply{maxData = 0.0f}
 

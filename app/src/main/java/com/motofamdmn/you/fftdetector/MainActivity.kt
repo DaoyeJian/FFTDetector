@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
         //データ保存フォルダ
         var dirFlag = 0
-        val mydirName = "testwave"
+        val mydirName = "fftdetector"
 
         // フォルダーを使用する場合、あるかを確認
         val myDir = File(

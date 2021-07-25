@@ -200,7 +200,7 @@ class fileOpenFragment : Fragment() {
 
     fun getFileSize(fileName: String) : Long {
 
-        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
+        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/fftdetector/"+fileName
         val myFile = File(fileNamePath)
         val myFileSize = myFile.length()
 
@@ -238,7 +238,7 @@ class fileOpenFragment : Fragment() {
         var fileReadProgress : Float = 0f
 
         // WAVファイルを開く
-        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+fileName
+        val fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/fftdetector/"+fileName
         val myFile = File(fileNamePath)
         val myFileSize = myFile.length().toInt()
         val file = FileInputStream(myFile)
@@ -521,7 +521,7 @@ class fileOpenFragment : Fragment() {
     private fun startPlaying() {
 
         if(cd.cdFileName != ""){
-            val fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/testwave/"+cd.cdFileName
+            val fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() +"/fftdetector/"+cd.cdFileName
 
             //wavファイルを再生する
             player = MediaPlayer().apply {
