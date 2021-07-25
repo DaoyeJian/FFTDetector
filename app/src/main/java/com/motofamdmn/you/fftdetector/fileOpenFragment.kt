@@ -48,6 +48,8 @@ class fileOpenFragment : Fragment() {
     //再生用
     private var player: MediaPlayer? = null
     private val dataFormat: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
+    private var tempZeroDate : Date = dataFormat.parse("00:00:00")  //00:00:00表示のための基準
+    private var tempZeroTime : Long = tempZeroDate.time
     private var totalTime : Int = 0
 
     //全フラグメントからアクセス可能の共通データ
@@ -79,7 +81,7 @@ class fileOpenFragment : Fragment() {
         override fun run() {
             if (playTime < totalTime) {
                 playTime += 500
-                playTimeText.text = "  ${dataFormat.format(playTime)}"
+                playTimeText.text = "  ${dataFormat.format(tempZeroTime + playTime)}"
             }
             handler.postDelayed(this, period.toLong())
         }
@@ -132,13 +134,13 @@ class fileOpenFragment : Fragment() {
 
         if(cd.cdFileName == ""){
             foFileNameText.text = "  FILE NAME :  --- "
-            totalTimeText.text = "/${dataFormat.format(0)}"
+            totalTimeText.text = "/${dataFormat.format(tempZeroDate)}"
         }else {
             foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
             totalTime = cd.wavDataTime * 1000
-            totalTimeText.text = "/${dataFormat.format(totalTime)}"
+            totalTimeText.text = "/${dataFormat.format(tempZeroTime + totalTime)}"
         }
-        playTimeText.text = "  ${dataFormat.format(playTime)}"
+        playTimeText.text = "  ${dataFormat.format(tempZeroTime + playTime)}"
 
         //再生ボタンクリック時
         foPlayBtn.setOnClickListener {
@@ -167,10 +169,10 @@ class fileOpenFragment : Fragment() {
                 if (selectedFileName != null) {
                     cd.cdFileName = selectedFileName
                     foFileNameText.text = "  FILE NAME :  ${cd.cdFileName} "
-                    playTimeText.text = "  ${dataFormat.format(0)}"
+                    playTimeText.text = "  ${dataFormat.format(tempZeroDate)}"
                     totalTime = selectedMyFile?.wavDataTime?.times(1000)
                     cd.wavDataTime = totalTime/1000  //totalTimeはミリ秒、wavDataTimeは秒
-                    totalTimeText.text = "/${dataFormat.format(totalTime)}"
+                    totalTimeText.text = "/${dataFormat.format(tempZeroTime + totalTime)}"
                     fileReadProgressBar.progress = 0
                     val myWavFileSize = getFileSize(selectedFileName)
                     fileReadProgressBar.max = myWavFileSize.toInt()

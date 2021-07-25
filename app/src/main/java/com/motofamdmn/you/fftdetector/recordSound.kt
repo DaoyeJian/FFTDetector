@@ -79,6 +79,8 @@ class recordSound : Fragment() {
 
     //録音時間のカウント用、Handlerを使って定期的に表示処理をする
     private val dataFormat: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
+    private var tempZeroDate : Date = dataFormat.parse("00:00:00")  //00:00:00表示のための基準
+    private var tempZeroTime : Long = tempZeroDate.time
     private var count = 0
     private var period : Int = 100
 
@@ -88,7 +90,7 @@ class recordSound : Fragment() {
     //periodで設定した時間ごとに録音時間とプログレスバーを更新
     private val updateTime: Runnable = object : Runnable {
         override fun run() {
-            markerWavText.text = dataFormat.format(xPosition*1000)
+            markerWavText.text = dataFormat.format(tempZeroTime + xPosition*1000)
             //recordTimeBar.progress = (xPosition * 10).toInt()  //xPositionは0.1秒刻みなのでプログレスバー表示のためには10倍する
             recFileNameText.text = "  RECORD FILE NAME :  ${cd.cdFileName}"
             handler.postDelayed(this, period.toLong())
@@ -158,8 +160,8 @@ class recordSound : Fragment() {
         button2.isVisible = true  //非録音中ボタンの表示
 
         //録音時間
-        markerWavText.text = dataFormat.format(0)
-        totalRecordTimeText.text = dataFormat.format(0)
+        markerWavText.text = dataFormat.format(tempZeroDate)
+        //totalRecordTimeText.text = dataFormat.format(tempZeroDate)
 
         //録音時間プログレスバー id:progressBar
         //recordTimeBar.max = 200
@@ -198,8 +200,8 @@ class recordSound : Fragment() {
                 xPosition = 0.0f
                 //recordTimeBar.progress = 0
                 newRecordFlg = 0
-                markerWavText.text = dataFormat.format(0)
-                totalRecordTimeText.text = dataFormat.format(0)
+                markerWavText.text = dataFormat.format(tempZeroDate)
+                //totalRecordTimeText.text = dataFormat.format(tempZeroDate)
             }
             stopBtnFlg = 0  //録音停止か再生停止か、0は録音停止を意味する
             button.isVisible = true  //録音中ボタンの表示
@@ -263,8 +265,8 @@ class recordSound : Fragment() {
             count = 0
             newRecordFlg = 1
             recordContinueFlg = 0
-            markerWavText.text = dataFormat.format(0)
-            totalRecordTimeText.text = dataFormat.format(0)
+            markerWavText.text = dataFormat.format(tempZeroDate)
+            //totalRecordTimeText.text = dataFormat.format(tempZeroDate)
             //サンプリングレートとデータ数を更新
             recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
             textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
