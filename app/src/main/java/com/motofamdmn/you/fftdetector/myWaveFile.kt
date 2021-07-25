@@ -25,6 +25,7 @@ class myWaveFile {
     private var count : Int = 0  //何点目のデータかを格納
     private val wavXData = arrayListOf<Float>()//wavのX軸データを保管、MPAndroidchartで描画できるようにFloat型になっている
     private val wavYData = arrayListOf<Float>() //wavのY軸データを保管、MPAndroidchartで描画できるようにFloat型になっている
+    private var temp16Data = Array<Float>(16){ 0f }  //16点平均用のデータ
 
     private val RIFF = byteArrayOf(
         'R'.toByte(),
@@ -60,7 +61,6 @@ class myWaveFile {
     private var dataSize = 0 //波形データのバイト数
 
     var longRecordFlg : Int = 0
-
 
     fun createFile(fName: String) {
         var fileName = fName
@@ -130,19 +130,28 @@ class myWaveFile {
             e.printStackTrace()
         }
 
-
-
-        var temp : Float = 0.0f
+        var tempX : Float = 0.0f
+        var tempY : Float = 0.0f
 
         // wav波形を描画するためにX軸とY軸データを格納
         if(longRecordFlg == 0) {  //長時間録音モードでないならばデータ格納
             for (i in shortData.indices) {
                 count++
-                temp = count.toFloat() / SAMPLING_RATE.toFloat()  //tempには現在のX軸の時間を格納、単位100msec
-                wavXData.add(temp)
-                wavYData.add(shortData[i] * 100 / 32768.toFloat())  //wavデータ格納、符号付き16bit(-32768～32767)のパーセンテージとする
+                tempX = count.toFloat() / SAMPLING_RATE.toFloat()  //tempには現在のX軸の時間を格納、単位100msec
+                tempY = shortData[i] * 100 / 32768.toFloat()  //wavデータ格納、符号付き16bit(-32768～32767)のパーセンテージとする
+                temp16Data[count % 16] = tempY
+                wavXData.add(tempX)
+                wavYData.add(tempY)
             }  //wavデータ格納
+        }else{
+            for (i in shortData.indices) {
+                count++
+                //tempX = count.toFloat() / SAMPLING_RATE.toFloat()  //tempには現在のX軸の時間を格納、単位100msec
+                tempY = shortData[i] * 100 / 32768.toFloat()  //wavデータ格納、符号付き16bit(-32768～32767)のパーセンテージとする
+                temp16Data[count % 16] = tempY
+            }
         }
+
         // ファイルサイズを更新
         updateFileSize()
 
@@ -187,20 +196,20 @@ class myWaveFile {
 
         var wavY16PointsMaxData = 0.0f
 
-        if (wavYData.size < 16) {  //データ数が16未満の場合
-            if (wavYData.size != 0) {
-                for (i in 0..wavYData.size) {
-                    if (kotlin.math.abs(wavYData[position - i - 1]) > wavY16PointsMaxData) {
-                        wavY16PointsMaxData = kotlin.math.abs(wavYData[position - i])
+        if (count < 16) {  //データ数が16未満の場合
+            if (count != 0) {  ////データ数が1～15の場合
+                for (i in 0..count) {
+                    if (kotlin.math.abs(temp16Data[i]) > wavY16PointsMaxData) {
+                        wavY16PointsMaxData = kotlin.math.abs(temp16Data[i])
                     }
                 }
             } else {
-                wavY16PointsMaxData = 0.0f
-            }  //データ数が0の場合
+                wavY16PointsMaxData = 0.0f  //データ数が0の場合
+            }
         } else {  //データ数が16以上の場合
             for (i in 0..15) {
-                if (kotlin.math.abs(wavYData[position - i - 1]) > wavY16PointsMaxData) {
-                    wavY16PointsMaxData = kotlin.math.abs(wavYData[position - i - 1])
+                if (kotlin.math.abs(temp16Data[i]) > wavY16PointsMaxData) {
+                    wavY16PointsMaxData = kotlin.math.abs(temp16Data[i])
                 }
             }
 

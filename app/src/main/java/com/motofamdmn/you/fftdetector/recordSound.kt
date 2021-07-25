@@ -269,9 +269,9 @@ class recordSound : Fragment() {
             //totalRecordTimeText.text = dataFormat.format(tempZeroDate)
             //サンプリングレートとデータ数を更新
             recFileNameText.text = "  RECORD FILE NAME :  NEW FILE READY "
-            textView4.text = " SAMPLINT RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
-            textView5.text = " DATA BIT : 16 BIT "
-            textView15.text = " CHANNEL : MONORAL "
+            textView4.text = "  SAMPLING RATE :  ${(cd.sampleRate/1000.0f).toString()} Hz "
+            textView5.text = "  DATA BIT : 16 BIT "
+            textView15.text = "  CHANNEL : MONORAL "
 
             longRecordSwitch.isClickable = true //長時間録音スイッチを押せるようにする
 
@@ -290,7 +290,7 @@ class recordSound : Fragment() {
             Log.e(LOG_TAG, "外部ストレージ利用不可")
         }
 
-        val mydirName = "testwave" // 保存フォルダー
+        val mydirName = "fftdetector" // 保存フォルダー
 
         // フォルダーを使用する場合、あるかを確認
         myDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), mydirName)
