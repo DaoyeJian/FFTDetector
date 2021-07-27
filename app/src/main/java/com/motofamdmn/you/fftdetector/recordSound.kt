@@ -77,6 +77,11 @@ class recordSound : Fragment() {
 
     var maxData = 0.0f
 
+    var stopBtnFlg = 0  //録音停止か再生停止かのフラグ、0が録音停止、1が再生停止
+    var newRecordFlg = 1  //新規の録音のときは1
+    var recordContinueFlg = 0 //録音継続中は1
+    var endFlg = 0 //20秒経過での録音停止、0は録音継続、1は録音停止
+
     //録音時間のカウント用、Handlerを使って定期的に表示処理をする
     private val dataFormat: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
     private var tempZeroDate : Date = dataFormat.parse("00:00:00")  //00:00:00表示のための基準
@@ -151,9 +156,6 @@ class recordSound : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         //fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.wav"
-        var stopBtnFlg = 0  //録音停止か再生停止かのフラグ、0が録音停止、1が再生停止
-        var newRecordFlg = 1  //新規の録音のときは1
-        var recordContinueFlg = 0 //録音継続中は1
 
         //Recordingボタンを非表示に
         button.isVisible = false  //録音中ボタンの非表示
@@ -265,6 +267,7 @@ class recordSound : Fragment() {
             count = 0
             newRecordFlg = 1
             recordContinueFlg = 0
+            endFlg = 0
             markerWavText.text = dataFormat.format(tempZeroDate)
             //totalRecordTimeText.text = dataFormat.format(tempZeroDate)
             //サンプリングレートとデータ数を更新
@@ -386,25 +389,39 @@ class recordSound : Fragment() {
 
                 if(longRecordSwitch.isChecked == FALSE) {  //長時間録音モードでないときは20秒でとめる
                     if (xPosition > 20.2) {
-                        stopAudioRecord()  //20秒を超えたら録音停止
-                        button.isVisible = false  //録音中ボタンの非表示
-                        button2.isVisible = true  //非録音中ボタンの表示
-                        handler.removeCallbacks(updateTime)
-                        markerWavText.text = dataFormat.format(xPosition*1000)
-                        val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
-                        // 位置調整
-                        toast.setGravity(Gravity.CENTER, 0, -400)
-                        toast.show()
-                        realm.executeTransaction { db: Realm ->
-                            val maxId = db.where<myFiles>().max("id")
-                            val nextId = (maxId?.toLong() ?: 0L) + 1
-                            val myFile = db.createObject<myFiles>(nextId)
-                            myFile.fileName = cd.cdFileName
-                            myFile.fileSize = wav1.getDataSize().toLong() + 44
-                            myFile.stereoMonoral = cd.stereoMonoral
-                            myFile.sampleRate = cd.sampleRate
-                            myFile.dataBit = cd.dataBits
-                            myFile.wavDataTime = wav1.getWavDataTime()
+                        if(endFlg == 0) {  //なぜか20.2秒を超えてもコールバックのせいかもう一度この行が走り、realmデータがダブるのでendFlgで処理をスキップさせている
+                            stopAudioRecord()  //20秒を超えたら録音停止
+                            endFlg = 1
+                            button.isVisible = false  //録音中ボタンの非表示
+                            button2.isVisible = true  //非録音中ボタンの表示
+                            handler.removeCallbacks(updateTime)
+                            markerWavText.text = dataFormat.format(tempZeroTime + xPosition * 1000)
+                            val toast = Toast.makeText(context, "  20秒超、録音停止  ", Toast.LENGTH_LONG)
+                            // 位置調整
+                            toast.setGravity(Gravity.CENTER, 0, -400)
+                            toast.show()
+
+                            if (recordContinueFlg == 0) {
+                                realm.executeTransaction { db: Realm ->
+                                    val maxId = db.where<myFiles>().max("id")
+                                    val nextId = (maxId?.toLong() ?: 0L) + 1
+                                    val myFile = db.createObject<myFiles>(nextId)
+                                    myFile.fileName = cd.cdFileName
+                                    myFile.fileSize = wav1.getDataSize().toLong() + 44
+                                    myFile.stereoMonoral = cd.stereoMonoral
+                                    myFile.sampleRate = cd.sampleRate
+                                    myFile.dataBit = cd.dataBits
+                                    myFile.wavDataTime = wav1.getWavDataTime()
+                                }
+                            } else {
+                                realm.executeTransaction { db: Realm ->
+                                    val maxId = db.where<myFiles>().max("id")
+                                    val myFile = db.where<myFiles>().equalTo("id", maxId?.toLong()).findFirst()
+                                    myFile?.fileName = cd.cdFileName
+                                    myFile?.fileSize = wav1.getDataSize().toLong() + 44
+                                    myFile?.wavDataTime = wav1.getWavDataTime()
+                                }
+                            }
                         }
                         cd.wavDataTime = wav1.getWavDataTime()
                     }

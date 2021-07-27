@@ -184,22 +184,23 @@ class MainActivity : AppCompatActivity() {
             for (i in 0..fileNum - 1) {
                 tempFilePath = myDir.getPath() + "/" + myFileList[i]
                 val tempFile = File(tempFilePath)
-                val tempWav = mWavRead()
-                tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む、メソッド内でデータをcdに読み込んでいる
-                if(tempWav.isWavFileFlg == 1) {
-                    realm.executeTransaction { db: Realm ->
-                        val maxId = db.where<myFiles>().max("id")
-                        val nextId = (maxId?.toLong() ?: 0L) + 1
-                        val myFile = db.createObject<myFiles>(nextId)
-                        myFile.fileName = myFileList[i]
-                        myFile.fileSize = tempFile.length()
-                        myFile.stereoMonoral = cd.stereoMonoral
-                        myFile.sampleRate = cd.sampleRate
-                        myFile.dataBit = cd.dataBits
-                        myFile.wavDataTime = cd.wavDataTime
+                if(tempFile.exists()) {
+                    val tempWav = mWavRead()
+                    tempWav.read(myFileList[i], HEADER_ONLY)  //HEADER_ONLYはデータ本体は読み込まない、READ_DATAでデータも読む、メソッド内でデータをcdに読み込んでいる
+                    if (tempWav.isWavFileFlg == 1) {
+                        realm.executeTransaction { db: Realm ->
+                            val maxId = db.where<myFiles>().max("id")
+                            val nextId = (maxId?.toLong() ?: 0L) + 1
+                            val myFile = db.createObject<myFiles>(nextId)
+                            myFile.fileName = myFileList[i]
+                            myFile.fileSize = tempFile.length()
+                            myFile.stereoMonoral = cd.stereoMonoral
+                            myFile.sampleRate = cd.sampleRate
+                            myFile.dataBit = cd.dataBits
+                            myFile.wavDataTime = cd.wavDataTime
+                        }
                     }
                 }
-
             }
         }
 
